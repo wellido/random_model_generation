@@ -118,5 +118,146 @@ class RandomLayers:
                                        kernel_regularizer=_kernel_regularizer, bias_regularizer=_bias_regularizer,
                                        activity_regularizer=_activity_regularizer, input_shape=self.input_shape)
 
+    # Conv2D layer
+    def r_convolution2d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.Conv2D(_filters, (_kernel_size, _kernel_size), (_strides, _strides),
+                                       padding=_padding, activation=_activation,
+                                       kernel_initializer=_kernel_initializer, bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer, bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer)
+        else:
+            return keras.layers.Conv2D(_filters, (_kernel_size, _kernel_size), (_strides, _strides),
+                                       padding=_padding, activation=_activation,
+                                       kernel_initializer=_kernel_initializer, bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer, bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer, input_shape=self.input_shape)
 
+    # Conv3D layer
+    def r_convolution3d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.Conv2D(_filters, (_kernel_size, _kernel_size, _kernel_size),
+                                       (_strides, _strides, _strides),
+                                       padding=_padding, activation=_activation,
+                                       kernel_initializer=_kernel_initializer, bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer, bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer)
+        else:
+            return keras.layers.Conv2D(_filters, (_kernel_size, _kernel_size, _kernel_size),
+                                       (_strides, _strides, _strides),
+                                       padding=_padding, activation=_activation,
+                                       kernel_initializer=_kernel_initializer, bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer, bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer, input_shape=self.input_shape)
 
+    # SeparableConv1D layer
+    def r_separableconv1d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.SeparableConv1D(_filters, _kernel_size, _strides,
+                                                padding=_padding, activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer)
+        else:
+            return keras.layers.SeparableConv1D(_filters, _kernel_size, _strides,
+                                                padding=_padding, activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape)
+
+    # SeparableConv2D layer
+    def r_separableconv2d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.SpatialDropout2D(_filters, (_kernel_size, _kernel_size), (_strides, _strides),
+                                                 padding=_padding, activation=_activation,
+                                                 kernel_initializer=_kernel_initializer,
+                                                 bias_initializer=_bias_initializer,
+                                                 kernel_regularizer=_kernel_regularizer,
+                                                 bias_regularizer=_bias_regularizer,
+                                                 activity_regularizer=_activity_regularizer)
+        else:
+            return keras.layers.SeparableConv2D(_filters, (_kernel_size, _kernel_size), (_strides, _strides),
+                                                padding=_padding, activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape)
+
+    # DepthwiseConv2D layer
+    def r_depthwiseconv2d(self):
+        _kernel_size = random.randint(1, self.max_filter)
+        _strides = random.randint(1, self.max_filter - _kernel_size + 1)
+        _padding = r_padding()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.SpatialDropout2D((_kernel_size, _kernel_size), (_strides, _strides),
+                                                 padding=_padding, activation=_activation,
+                                                 kernel_initializer=_kernel_initializer,
+                                                 bias_initializer=_bias_initializer,
+                                                 kernel_regularizer=_kernel_regularizer,
+                                                 bias_regularizer=_bias_regularizer,
+                                                 activity_regularizer=_activity_regularizer)
+        else:
+            return keras.layers.SeparableConv2D((_kernel_size, _kernel_size), (_strides, _strides),
+                                                padding=_padding, activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape)
+
+    # Conv2DTranspose layer
+    
