@@ -30,3 +30,14 @@ def r_padding():
     padding_selected = random.sample(all_padding, 1)[0]
     return padding_selected
 
+
+def r_padding2():
+    all_padding = ['valid', 'same']
+    padding_selected = random.sample(all_padding, 1)[0]
+    return padding_selected
+
+
+def r_interpolation():
+    all_interpolation = ['nearest', 'bilinear']
+    interpolation_selected = random.sample(all_interpolation, 1)[0]
+    return interpolation_selected

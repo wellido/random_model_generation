@@ -4,15 +4,25 @@ import keras
 
 
 class RandomLayers:
-    def __init__(self, is_first_layer, input_shape=None):
+    def __init__(self):
         self.max_units = 50
         self.max_filter = 50
+        self.max_cell = 50
         self.max_dropout_rate = 1.0
         self.max_regularization_factor = 0.01
+        self.max_input_dim = 2000
+        self.max_output_dim = 100
+        self.units = 0
+        self.input_shape = None
+        self.is_first_layer = 0
+
+    def set_first_layer(self, is_first_layer):
         self.is_first_layer = is_first_layer
+
+    def set_input_shape(self, input_shape):
         self.input_shape = input_shape
 
-    # Dense layer
+    # Dense Layer
     def r_dense(self):
         _activation = r_activation()
         _kernel_initializer = r_initializer()
@@ -20,14 +30,8 @@ class RandomLayers:
         _kernel_regularizer = r_regularizers()
         _bias_regularizer = r_regularizers()
         _unit = random.randint(1, self.max_units)
+        self.units = _unit
         if self.is_first_layer:
-            return keras.layers.Dense(_unit,
-                                      activation=_activation,
-                                      kernel_initializer=_kernel_initializer,
-                                      bias_initializer=_bias_initializer,
-                                      kernel_regularizer=_kernel_regularizer,
-                                      bias_regularizer=_bias_regularizer)
-        else:
             return keras.layers.Dense(_unit,
                                       activation=_activation,
                                       kernel_initializer=_kernel_initializer,
@@ -35,58 +39,65 @@ class RandomLayers:
                                       kernel_regularizer=_kernel_regularizer,
                                       bias_regularizer=_bias_regularizer,
                                       input_shape=self.input_shape)
+        else:
+            return keras.layers.Dense(_unit,
+                                      activation=_activation,
+                                      kernel_initializer=_kernel_initializer,
+                                      bias_initializer=_bias_initializer,
+                                      kernel_regularizer=_kernel_regularizer,
+                                      bias_regularizer=_bias_regularizer)
 
-    # Activation layer
+    # Activation Layer
     def r_activation(self):
         _activation = r_activation()
         if self.is_first_layer:
-            return keras.layers.Activation(_activation)
-        else:
             return keras.layers.Activation(_activation,
                                            input_shape=self.input_shape)
+        else:
+            return keras.layers.Activation(_activation)
 
-    # Dropout layer
+    # Dropout Layer
     def r_dropout(self):
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         _seed = random.sample([None, 1, 2, 3, 4, 5], 1)[0]
         if self.is_first_layer:
             return keras.layers.Dropout(dropout_rate,
-                                        seed=_seed)
-        else:
-            return keras.layers.Dropout(dropout_rate,
                                         seed=_seed,
                                         input_shape=self.input_shape)
+        else:
+            return keras.layers.Dropout(dropout_rate,
+                                        seed=_seed)
 
-    # Flatten layer
+    # Flatten Layer
     def r_flatten(self):
         if self.is_first_layer:
-            return keras.layers.Flatten()
-        else:
             return keras.layers.Flatten(input_shape=self.input_shape)
+        else:
+            return keras.layers.Flatten()
 
-    # Input layer
+    # Input Layer
     def r_input(self):
         return keras.engine.input_layer.Input(shape=self.input_shape)
 
-    # ActivityRegularization layer
+    # ActivityRegularization Layer
     def r_activity_regularization(self):
         l1_factor = random.uniform(0., self.max_regularization_factor)
         l2_factor = random.uniform(0., self.max_regularization_factor)
         if self.is_first_layer:
             return keras.layers.ActivityRegularization(l1=l1_factor,
-                                                       l2=l2_factor)
-        else:
-            return keras.layers.ActivityRegularization(l1=l1_factor,
                                                        l2=l2_factor,
                                                        input_shape=self.input_shape)
+        else:
+            return keras.layers.ActivityRegularization(l1=l1_factor,
+                                                       l2=l2_factor)
 
-    # Masking layer
+    # Masking Layer
     def r_masking(self):
         _mask_value = random.uniform(0., 1.0)
         return keras.layers.Masking(mask_value=_mask_value,
                                     input_shape=self.input_shape)
 
-    # SpatialDropout1D layer
+    # SpatialDropout1D Layer
     def r_spatial_dropout1d(self):
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
@@ -95,25 +106,25 @@ class RandomLayers:
             return keras.layers.SpatialDropout1D(dropout_rate,
                                                  input_shape=self.input_shape)
 
-    # SpatialDropout2D layer
+    # SpatialDropout2D Layer
     def r_spatial_dropout2d(self):
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
-            return keras.layers.SpatialDropout2D(dropout_rate)
-        else:
             return keras.layers.SpatialDropout2D(dropout_rate,
                                                  input_shape=self.input_shape)
+        else:
+            return keras.layers.SpatialDropout2D(dropout_rate)
 
-    # SpatialDropout3D layer
+    # SpatialDropout3D Layer
     def r_spatial_dropout3d(self):
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
-            return keras.layers.SpatialDropout3D(dropout_rate)
-        else:
             return keras.layers.SpatialDropout3D(dropout_rate,
                                                  input_shape=self.input_shape)
+        else:
+            return keras.layers.SpatialDropout3D(dropout_rate)
 
-    # Conv1D layer
+    # Conv1D Layer
     def r_convolution1d(self):
         _filters = random.randint(1, self.max_filter)
         _kernel_size = random.randint(1, _filters)
@@ -135,7 +146,8 @@ class RandomLayers:
                                        bias_initializer=_bias_initializer,
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
-                                       activity_regularizer=_activity_regularizer)
+                                       activity_regularizer=_activity_regularizer,
+                                       input_shape=self.input_shape)
         else:
             return keras.layers.Conv1D(_filters,
                                        _kernel_size,
@@ -146,15 +158,14 @@ class RandomLayers:
                                        bias_initializer=_bias_initializer,
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
-                                       activity_regularizer=_activity_regularizer,
-                                       input_shape=self.input_shape)
+                                       activity_regularizer=_activity_regularizer)
 
-    # Conv2D layer
+    # Conv2D Layer
     def r_convolution2d(self):
         _filters = random.randint(1, self.max_filter)
         _kernel_size = random.randint(1, _filters)
         _strides = random.randint(1, _filters - _kernel_size + 1)
-        _padding = r_padding()
+        _padding = r_padding2()
         _activation = r_activation()
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
@@ -171,7 +182,8 @@ class RandomLayers:
                                        bias_initializer=_bias_initializer,
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
-                                       activity_regularizer=_activity_regularizer)
+                                       activity_regularizer=_activity_regularizer,
+                                       input_shape=self.input_shape)
         else:
             return keras.layers.Conv2D(_filters,
                                        (_kernel_size, _kernel_size),
@@ -182,51 +194,14 @@ class RandomLayers:
                                        bias_initializer=_bias_initializer,
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
-                                       activity_regularizer=_activity_regularizer,
-                                       input_shape=self.input_shape)
-
-    # Conv3D layer
-    def r_convolution3d(self):
-        _filters = random.randint(1, self.max_filter)
-        _kernel_size = random.randint(1, _filters)
-        _strides = random.randint(1, _filters - _kernel_size + 1)
-        _padding = r_padding()
-        _activation = r_activation()
-        _kernel_initializer = r_initializer()
-        _bias_initializer = r_initializer()
-        _kernel_regularizer = r_regularizers()
-        _bias_regularizer = r_regularizers()
-        _activity_regularizer = r_regularizers()
-        if self.is_first_layer:
-            return keras.layers.Conv2D(_filters,
-                                       (_kernel_size, _kernel_size, _kernel_size),
-                                       (_strides, _strides, _strides),
-                                       padding=_padding,
-                                       activation=_activation,
-                                       kernel_initializer=_kernel_initializer,
-                                       bias_initializer=_bias_initializer,
-                                       kernel_regularizer=_kernel_regularizer,
-                                       bias_regularizer=_bias_regularizer,
                                        activity_regularizer=_activity_regularizer)
-        else:
-            return keras.layers.Conv2D(_filters,
-                                       (_kernel_size, _kernel_size, _kernel_size),
-                                       (_strides, _strides, _strides),
-                                       padding=_padding,
-                                       activation=_activation,
-                                       kernel_initializer=_kernel_initializer,
-                                       bias_initializer=_bias_initializer,
-                                       kernel_regularizer=_kernel_regularizer,
-                                       bias_regularizer=_bias_regularizer,
-                                       activity_regularizer=_activity_regularizer,
-                                       input_shape=self.input_shape)
 
-    # SeparableConv1D layer
-    def r_separableconv1d(self):
+    # SeparableConv1D Layer
+    def r_separable_conv1d(self):
         _filters = random.randint(1, self.max_filter)
         _kernel_size = random.randint(1, _filters)
         _strides = random.randint(1, _filters - _kernel_size + 1)
-        _padding = r_padding()
+        _padding = r_padding2()
         _activation = r_activation()
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
@@ -237,30 +212,32 @@ class RandomLayers:
             return keras.layers.SeparableConv1D(_filters,
                                                 _kernel_size,
                                                 _strides,
-                                                padding=_padding, activation=_activation,
-                                                kernel_initializer=_kernel_initializer,
-                                                bias_initializer=_bias_initializer,
-                                                kernel_regularizer=_kernel_regularizer,
-                                                bias_regularizer=_bias_regularizer,
-                                                activity_regularizer=_activity_regularizer)
-        else:
-            return keras.layers.SeparableConv1D(_filters,
-                                                _kernel_size,
-                                                _strides,
-                                                padding=_padding, activation=_activation,
+                                                padding=_padding,
+                                                activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer,
                                                 input_shape=self.input_shape)
+        else:
+            return keras.layers.SeparableConv1D(_filters,
+                                                _kernel_size,
+                                                _strides,
+                                                padding=_padding,
+                                                activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer)
 
-    # SeparableConv2D layer
-    def r_separableconv2d(self):
+    # SeparableConv2D Layer
+    def r_separable_conv2d(self):
         _filters = random.randint(1, self.max_filter)
         _kernel_size = random.randint(1, _filters)
         _strides = random.randint(1, _filters - _kernel_size + 1)
-        _padding = r_padding()
+        _padding = r_padding2()
         _activation = r_activation()
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
@@ -271,29 +248,31 @@ class RandomLayers:
             return keras.layers.SpatialDropout2D(_filters,
                                                  (_kernel_size, _kernel_size),
                                                  (_strides, _strides),
-                                                 padding=_padding, activation=_activation,
+                                                 padding=_padding,
+                                                 activation=_activation,
                                                  kernel_initializer=_kernel_initializer,
                                                  bias_initializer=_bias_initializer,
                                                  kernel_regularizer=_kernel_regularizer,
                                                  bias_regularizer=_bias_regularizer,
-                                                 activity_regularizer=_activity_regularizer)
+                                                 activity_regularizer=_activity_regularizer,
+                                                 input_shape=self.input_shape)
         else:
             return keras.layers.SeparableConv2D(_filters,
                                                 (_kernel_size, _kernel_size),
                                                 (_strides, _strides),
-                                                padding=_padding, activation=_activation,
+                                                padding=_padding,
+                                                activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
-                                                activity_regularizer=_activity_regularizer,
-                                                input_shape=self.input_shape)
+                                                activity_regularizer=_activity_regularizer)
 
-    # DepthwiseConv2D layer
-    def r_depthwiseconv2d(self):
+    # DepthwiseConv2D Layer
+    def r_depthwise_conv2d(self):
         _kernel_size = random.randint(1, self.max_filter)
         _strides = random.randint(1, self.max_filter - _kernel_size + 1)
-        _padding = r_padding()
+        _padding = r_padding2()
         _activation = r_activation()
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
@@ -301,30 +280,33 @@ class RandomLayers:
         _bias_regularizer = r_regularizers()
         _activity_regularizer = r_regularizers()
         if self.is_first_layer:
-            return keras.layers.SpatialDropout2D((_kernel_size, _kernel_size),
+            return keras.layers.SpatialDropout2D(_kernel_size,
                                                  (_strides, _strides),
-                                                 padding=_padding, activation=_activation,
+                                                 padding=_padding,
+                                                 activation=_activation,
                                                  kernel_initializer=_kernel_initializer,
                                                  bias_initializer=_bias_initializer,
                                                  kernel_regularizer=_kernel_regularizer,
                                                  bias_regularizer=_bias_regularizer,
-                                                 activity_regularizer=_activity_regularizer)
+                                                 activity_regularizer=_activity_regularizer,
+                                                 input_shape=self.input_shape)
         else:
-            return keras.layers.SeparableConv2D((_kernel_size, _kernel_size),
+            return keras.layers.SeparableConv2D(_kernel_size,
                                                 (_strides, _strides),
-                                                padding=_padding, activation=_activation,
+                                                padding=_padding,
+                                                activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
-                                                activity_regularizer=_activity_regularizer,
-                                                input_shape=self.input_shape)
+                                                activity_regularizer=_activity_regularizer)
 
-    # Conv2DTranspose layer
-    def r_conv2dtranspose(self):
+    # Conv2DTranspose Layer
+    def r_conv2d_transpose(self):
         _filters = random.randint(1, self.max_filter)
         _kernel_size = random.randint(1, _filters)
-        _padding = r_padding()
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding2()
         _activation = r_activation()
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
@@ -333,7 +315,82 @@ class RandomLayers:
         _activity_regularizer = r_regularizers()
         if self.is_first_layer:
             return keras.layers.Conv2DTranspose(_filters,
-                                                _kernel_size,
+                                                (_kernel_size, _kernel_size),
+                                                (_strides, _strides),
+                                                padding=_padding,
+                                                activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape
+                                                )
+        else:
+            return keras.layers.Conv2DTranspose(_filters,
+                                                (_kernel_size, _kernel_size),
+                                                (_strides, _strides),
+                                                padding=_padding,
+                                                activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer
+                                                )
+
+    # Conv3D Layer
+    def r_convolution3d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding2()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.Conv2D(_filters,
+                                       (_kernel_size, _kernel_size, _kernel_size),
+                                       (_strides, _strides, _strides),
+                                       padding=_padding,
+                                       activation=_activation,
+                                       kernel_initializer=_kernel_initializer,
+                                       bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer,
+                                       bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer,
+                                       input_shape=self.input_shape)
+        else:
+            return keras.layers.Conv2D(_filters,
+                                       (_kernel_size, _kernel_size, _kernel_size),
+                                       (_strides, _strides, _strides),
+                                       padding=_padding,
+                                       activation=_activation,
+                                       kernel_initializer=_kernel_initializer,
+                                       bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer,
+                                       bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer)
+
+    # Conv3DTranspose Layer
+    def r_conv3d_transpose(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding2()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.Conv2DTranspose(_filters,
+                                                (_kernel_size, _kernel_size, _kernel_size),
+                                                (_strides, _strides, _strides),
                                                 padding=_padding, activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
@@ -343,7 +400,8 @@ class RandomLayers:
                                                 )
         else:
             return keras.layers.Conv2DTranspose(_filters,
-                                                _kernel_size,
+                                                (_kernel_size, _kernel_size, _kernel_size),
+                                                (_strides, _strides, _strides),
                                                 padding=_padding, activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
@@ -352,3 +410,628 @@ class RandomLayers:
                                                 activity_regularizer=_activity_regularizer,
                                                 input_shape=self.input_shape
                                                 )
+
+    # Cropping1D Layer
+    def r_cropping1d(self):
+        _cropping = random.randint(0, 2)
+        if self.is_first_layer:
+            return keras.layers.Cropping1D(cropping=_cropping,
+                                           input_shape=self.input_shape)
+        else:
+            return keras.layers.Cropping1D(cropping=_cropping)
+
+    # Cropping2D Layer
+    def r_cropping2d(self):
+        _cropping = random.randint(0, 2)
+        if self.is_first_layer:
+            return keras.layers.Cropping2D(cropping=_cropping,
+                                           input_shape=self.input_shape)
+        else:
+            return keras.layers.Cropping2D(cropping=_cropping)
+
+
+    # Cropping3D Layer
+    def r_cropping3d(self):
+        _cropping = random.randint(0, 2)
+        if self.is_first_layer:
+            return keras.layers.Cropping3D(cropping=_cropping,
+                                           input_shape=self.input_shape)
+        else:
+            return keras.layers.Cropping3D(cropping=_cropping)
+
+    # UpSampling1D Layer
+    def r_up_sampling1d(self):
+        _size = random.randint(0, 2)
+        if self.is_first_layer:
+            return keras.layers.UpSampling1D(size=_size,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.UpSampling1D(size=_size)
+
+    # UpSampling2D Layer
+    def r_up_sampling2d(self):
+        _size = random.randint(0, 2)
+        _interpolation = r_interpolation()
+        if self.is_first_layer:
+            return keras.layers.UpSampling2D(size=_size,
+                                             interpolation=_interpolation,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.UpSampling2D(size=_size,
+                                             interpolation=_interpolation)
+
+    # UpSampling3D Layer
+    def r_up_sampling3d(self):
+        _size = random.randint(0, 2)
+        if self.is_first_layer:
+            return keras.layers.UpSampling3D(size=_size,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.UpSampling3D(size=_size)
+
+    # ZeroPadding1D Layer
+    def r_zero_padding1d(self):
+        _choose = random.randint(0, 1)
+        _padding = random.randint(0, 9)
+        if _choose:
+            if self.is_first_layer:
+                return keras.layers.ZeroPadding1D(padding=(_padding, _padding),
+                                                  input_shape=self.input_shape)
+            else:
+                return keras.layers.ZeroPadding1D(padding=(_padding, _padding))
+        else:
+            return keras.layers.ZeroPadding1D(padding=_padding)
+
+    # ZeroPadding2D Layer
+    def r_zero_padding2d(self):
+        _padding = random.randint(0, 9)
+        if self.is_first_layer:
+            return keras.layers.ZeroPadding2D(padding=_padding,
+                                              data_format=None,
+                                              input_shape=self.input_shape)
+        else:
+            return keras.layers.ZeroPadding2D(padding=_padding,
+                                              data_format=None)
+
+    # ZeroPadding3D Layer
+    def r_zero_padding3d(self):
+        _padding = random.randint(0, 9)
+        if self.is_first_layer:
+            return keras.layers.ZeroPadding3D(padding=_padding,
+                                              data_format=None,
+                                              input_shape=self.input_shape)
+        else:
+            return keras.layers.ZeroPadding3D(padding=_padding,
+                                              data_format=None)
+
+    # MaxPooling1D Layer
+    def r_max_pooling1d(self):
+        _pool_size = random.randint(1, 3)
+        _padding = r_padding2()
+        if self.is_first_layer:
+            return keras.layers.MaxPooling1D(pool_size=_pool_size,
+                                             padding=_padding,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.MaxPooling1D(pool_size=_pool_size,
+                                             padding=_padding)
+
+    # MaxPooling2D Layer
+    def r_max_pooling2d(self):
+        _pool_size = random.randint(1, 3)
+        _padding = r_padding2()
+        if self.is_first_layer:
+            return keras.layers.MaxPooling2D(pool_size=_pool_size,
+                                             padding=_padding,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.MaxPooling2D(pool_size=_pool_size,
+                                             padding=_padding)
+
+    # MaxPooling3D Layer
+    def r_max_pooling3d(self):
+        _pool_size = random.randint(1, 3)
+        _padding = r_padding2()
+        if self.is_first_layer:
+            return keras.layers.MaxPooling3D(pool_size=_pool_size,
+                                             padding=_padding,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.MaxPooling3D(pool_size=_pool_size,
+                                             padding=_padding)
+
+    # AveragePooling1D Layer
+    def r_average_pooling1d(self):
+        _pool_size = random.randint(1, 3)
+        _padding = r_padding2()
+        if self.is_first_layer:
+            return keras.layers.AveragePooling1D(pool_size=_pool_size,
+                                                 padding=_padding,
+                                                 input_shape=self.input_shape)
+        else:
+            return keras.layers.AveragePooling1D(pool_size=_pool_size,
+                                                 padding=_padding)
+
+    # AveragePooling2D Layer
+    def r_average_pooling2d(self):
+        _pool_size = random.randint(1, 3)
+        _padding = r_padding2()
+        if self.is_first_layer:
+            return keras.layers.AveragePooling2D(pool_size=_pool_size,
+                                                 padding=_padding,
+                                                 input_shape=self.input_shape)
+        else:
+            return keras.layers.AveragePooling2D(pool_size=_pool_size,
+                                                 padding=_padding)
+
+    # AveragePooling3D Layer
+    def r_average_pooling3d(self):
+        _pool_size = random.randint(1, 3)
+        _padding = r_padding2()
+        if self.is_first_layer:
+            return keras.layers.AveragePooling3D(pool_size=_pool_size,
+                                                 padding=_padding,
+                                                 input_shape=self.input_shape)
+        else:
+            return keras.layers.AveragePooling3D(pool_size=_pool_size,
+                                                 padding=_padding)
+
+    # GlobalMaxPooling1D Layer
+    def r_global_max_pooling1d(self):
+        if self.is_first_layer:
+            return keras.layers.GlobalMaxPooling1D(input_shape=self.input_shape)
+        else:
+            return keras.layers.GlobalAveragePooling1D()
+
+    # GlobalAveragePooling1D Layer
+    def r_global_average_pooling1d(self):
+        if self.is_first_layer:
+            return keras.layers.GlobalAveragePooling1D(input_shape=self.input_shape)
+        else:
+            return keras.layers.GlobalAveragePooling1D()
+
+    # GlobalMaxPooling2D Layer
+    def r_global_max_pooling2d(self):
+        if self.is_first_layer:
+            return keras.layers.GlobalMaxPooling2D(input_shape=self.input_shape)
+        else:
+            return keras.layers.GlobalMaxPooling2D()
+
+    # GlobalAveragePooling2D Layer
+    def r_global_average_pooling2d(self):
+        if self.is_first_layer:
+            return keras.layers.GlobalAveragePooling2D(input_shape=self.input_shape)
+        else:
+            return keras.layers.GlobalAveragePooling2D()
+
+    # GlobalMaxPooling3D Layer
+    def r_global_max_pooling3d(self):
+        if self.is_first_layer:
+            return keras.layers.GlobalMaxPooling3D(input_shape=self.input_shape)
+        else:
+            return keras.layers.GlobalMaxPooling3D()
+
+    # GlobalAveragePooling3D Layer
+    def r_global_average_pooling3d(self):
+        if self.is_first_layer:
+            return keras.layers.GlobalAveragePooling3D(input_shape=self.input_shape)
+        else:
+            return keras.layers.GlobalAveragePooling3D()
+
+    # LocallyConnected1D Layer
+    def r_locally_connected1d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding2()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.LocallyConnected1D(_filters,
+                                                   _kernel_size,
+                                                   _strides,
+                                                   padding=_padding,
+                                                   activation=_activation,
+                                                   kernel_initializer=_kernel_initializer,
+                                                   bias_initializer=_bias_initializer,
+                                                   kernel_regularizer=_kernel_regularizer,
+                                                   bias_regularizer=_bias_regularizer,
+                                                   activity_regularizer=_activity_regularizer,
+                                                   input_shape=self.input_shape)
+        else:
+            return keras.layers.LocallyConnected1D(_filters,
+                                                   _kernel_size,
+                                                   _strides,
+                                                   padding=_padding,
+                                                   activation=_activation,
+                                                   kernel_initializer=_kernel_initializer,
+                                                   bias_initializer=_bias_initializer,
+                                                   kernel_regularizer=_kernel_regularizer,
+                                                   bias_regularizer=_bias_regularizer,
+                                                   activity_regularizer=_activity_regularizer)
+
+    # LocallyConnected2D Layer
+    def r_locally_connected2d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding2()
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.LocallyConnected1D(_filters,
+                                                   (_kernel_size, _kernel_size),
+                                                   (_strides, _strides),
+                                                   padding=_padding,
+                                                   activation=_activation,
+                                                   kernel_initializer=_kernel_initializer,
+                                                   bias_initializer=_bias_initializer,
+                                                   kernel_regularizer=_kernel_regularizer,
+                                                   bias_regularizer=_bias_regularizer,
+                                                   activity_regularizer=_activity_regularizer,
+                                                   input_shape=self.input_shape)
+        else:
+            return keras.layers.LocallyConnected1D(_filters,
+                                                   (_kernel_size, _kernel_size),
+                                                   (_strides, _strides),
+                                                   padding=_padding,
+                                                   activation=_activation,
+                                                   kernel_initializer=_kernel_initializer,
+                                                   bias_initializer=_bias_initializer,
+                                                   kernel_regularizer=_kernel_regularizer,
+                                                   bias_regularizer=_bias_regularizer,
+                                                   activity_regularizer=_activity_regularizer)
+
+
+    # SimpleRNN Layer
+    def r_simple_rnn(self):
+        _units = random.randint(1, self.max_units)
+        _activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _recurrent_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _recurrent_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        _dropout = random.uniform(0., self.max_dropout_rate)
+        _recurent_dropout = random.uniform(0., self.max_dropout_rate)
+        _return_sequences = random.sample([True, False], 1)[0]
+        _return_state = random.sample([True, False], 1)[0]
+        _go_backwards = random.sample([True, False], 1)[0]
+        _stateful = random.sample([True, False], 1)[0]
+        _unroll = random.sample([True, False], 1)[0]
+        if self.is_first_layer:
+            return keras.layers.SimpleRNN(_units,
+                                          activation=_activation,
+                                          kernel_initializer=_kernel_initializer,
+                                          recurrent_initializer=_recurrent_initializer,
+                                          bias_initializer=_bias_initializer,
+                                          kernel_regularizer=_kernel_regularizer,
+                                          recurrent_regularizer=_recurrent_regularizer,
+                                          bias_regularizer=_bias_regularizer,
+                                          activity_regularizer=_activity_regularizer,
+                                          dropout=_dropout,
+                                          recurrent_dropout=_recurent_dropout,
+                                          return_sequences=_return_sequences,
+                                          return_state=_return_state,
+                                          go_backwards=_go_backwards,
+                                          stateful=_stateful,
+                                          unroll=_unroll,
+                                          input_shape=self.input_shape)
+        else:
+            return keras.layers.SimpleRNN(_units,
+                                          activation=_activation,
+                                          kernel_initializer=_kernel_initializer,
+                                          recurrent_initializer=_recurrent_initializer,
+                                          bias_initializer=_bias_initializer,
+                                          kernel_regularizer=_kernel_regularizer,
+                                          recurrent_regularizer=_recurrent_regularizer,
+                                          bias_regularizer=_bias_regularizer,
+                                          activity_regularizer=_activity_regularizer,
+                                          dropout=_dropout,
+                                          recurrent_dropout=_recurent_dropout,
+                                          return_sequences=_return_sequences,
+                                          return_state=_return_state,
+                                          go_backwards=_go_backwards,
+                                          stateful=_stateful,
+                                          unroll=_unroll)
+
+    # GRU Layer
+    def r_gru(self):
+        _units = random.randint(1, self.max_units)
+        _activation = r_activation()
+        _recurrent_activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _recurrent_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _recurrent_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        _dropout = random.uniform(0., self.max_dropout_rate)
+        _recurent_dropout = random.uniform(0., self.max_dropout_rate)
+        _implementation = random.randint(1, 2)
+        _return_sequences = random.sample([True, False], 1)[0]
+        _return_state = random.sample([True, False], 1)[0]
+        _go_backwards = random.sample([True, False], 1)[0]
+        _stateful = random.sample([True, False], 1)[0]
+        _unroll = random.sample([True, False], 1)[0]
+        if self.is_first_layer:
+            return keras.layers.GRU(_units,
+                                    activation=_activation,
+                                    recurrent_activation=_recurrent_activation,
+                                    kernel_initializer=_kernel_initializer,
+                                    recurrent_initializer=_recurrent_initializer,
+                                    bias_initializer=_bias_initializer,
+                                    kernel_regularizer=_kernel_regularizer,
+                                    recurrent_regularizer=_recurrent_regularizer,
+                                    bias_regularizer=_bias_regularizer,
+                                    activity_regularizer=_activity_regularizer,
+                                    dropout=_dropout,
+                                    recurrent_dropout=_recurent_dropout,
+                                    implementation=_implementation,
+                                    return_sequences=_return_sequences,
+                                    return_state=_return_state,
+                                    go_backwards=_go_backwards,
+                                    stateful=_stateful,
+                                    unroll=_unroll,
+                                    input_shape=self.input_shape
+                                    )
+        else:
+            return keras.layers.GRU(_units,
+                                    activation=_activation,
+                                    recurrent_activation=_recurrent_activation,
+                                    kernel_initializer=_kernel_initializer,
+                                    recurrent_initializer=_recurrent_initializer,
+                                    bias_initializer=_bias_initializer,
+                                    kernel_regularizer=_kernel_regularizer,
+                                    recurrent_regularizer=_recurrent_regularizer,
+                                    bias_regularizer=_bias_regularizer,
+                                    activity_regularizer=_activity_regularizer,
+                                    dropout=_dropout,
+                                    recurrent_dropout=_recurent_dropout,
+                                    implementation=_implementation,
+                                    return_sequences=_return_sequences,
+                                    return_state=_return_state,
+                                    go_backwards=_go_backwards,
+                                    stateful=_stateful,
+                                    unroll=_unroll
+                                    )
+
+    # LSTM Layer
+    def r_lstm(self):
+        _units = random.randint(1, self.max_units)
+        _activation = r_activation()
+        _recurrent_activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _recurrent_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _unit_forget_bias = random.sample([True, False], 1)[0]
+        _kernel_regularizer = r_regularizers()
+        _recurrent_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        _dropout = random.uniform(0., self.max_dropout_rate)
+        _recurent_dropout = random.uniform(0., self.max_dropout_rate)
+        _implementation = random.randint(1, 2)
+        _return_sequences = random.sample([True, False], 1)[0]
+        _return_state = random.sample([True, False], 1)[0]
+        _go_backwards = random.sample([True, False], 1)[0]
+        _stateful = random.sample([True, False], 1)[0]
+        _unroll = random.sample([True, False], 1)[0]
+        if self.is_first_layer:
+            return keras.layers.LSTM(_units,
+                                     activation=_activation,
+                                     recurrent_activation=_recurrent_activation,
+                                     kernel_initializer=_kernel_initializer,
+                                     recurrent_initializer=_recurrent_initializer,
+                                     bias_initializer=_bias_initializer,
+                                     unit_forget_bias=_unit_forget_bias,
+                                     kernel_regularizer=_kernel_regularizer,
+                                     recurrent_regularizer=_recurrent_regularizer,
+                                     bias_regularizer=_bias_regularizer,
+                                     activity_regularizer=_activity_regularizer,
+                                     dropout=_dropout,
+                                     recurrent_dropout=_recurent_dropout,
+                                     implementation=_implementation,
+                                     return_sequences=_return_sequences,
+                                     return_state=_return_state,
+                                     go_backwards=_go_backwards,
+                                     stateful=_stateful,
+                                     unroll=_unroll,
+                                     input_shape=self.input_shape
+                                     )
+        else:
+            return keras.layers.LSTM(_units,
+                                     activation=_activation,
+                                     recurrent_activation=_recurrent_activation,
+                                     kernel_initializer=_kernel_initializer,
+                                     recurrent_initializer=_recurrent_initializer,
+                                     bias_initializer=_bias_initializer,
+                                     unit_forget_bias=_unit_forget_bias,
+                                     kernel_regularizer=_kernel_regularizer,
+                                     recurrent_regularizer=_recurrent_regularizer,
+                                     bias_regularizer=_bias_regularizer,
+                                     activity_regularizer=_activity_regularizer,
+                                     dropout=_dropout,
+                                     recurrent_dropout=_recurent_dropout,
+                                     implementation=_implementation,
+                                     return_sequences=_return_sequences,
+                                     return_state=_return_state,
+                                     go_backwards=_go_backwards,
+                                     stateful=_stateful,
+                                     unroll=_unroll
+                                     )
+
+    # ConvLSTM2D Layer
+    def r_conv_lstm2d(self):
+        _filters = random.randint(1, self.max_filter)
+        _kernel_size = random.randint(1, _filters)
+        _strides = random.randint(1, _filters - _kernel_size + 1)
+        _padding = r_padding2()
+        _activation = r_activation()
+        _recurrent_activation = r_activation()
+        _kernel_initializer = r_initializer()
+        _recurrent_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _unit_forget_bias = random.sample([True, False], 1)[0]
+        _kernel_regularizer = r_regularizers()
+        _recurrent_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        _return_sequences = random.sample([True, False], 1)[0]
+        _go_backwards = random.sample([True, False], 1)[0]
+        _stateful = random.sample([True, False], 1)[0]
+        _dropout = random.uniform(0., self.max_dropout_rate)
+        _recurent_dropout = random.uniform(0., self.max_dropout_rate)
+        if self.is_first_layer:
+            return keras.layers.ConvLSTM2D(_filters,
+                                           (_kernel_size, _kernel_size),
+                                           (_strides, _strides),
+                                           padding=_padding,
+                                           activation=_activation,
+                                           recurrent_activation=_recurrent_activation,
+                                           kernel_initializer=_kernel_initializer,
+                                           recurrent_initializer=_recurrent_initializer,
+                                           bias_initializer=_bias_initializer,
+                                           unit_forget_bias=_unit_forget_bias,
+                                           kernel_regularizer=_kernel_regularizer,
+                                           recurrent_regularizer=_recurrent_regularizer,
+                                           bias_regularizer=_bias_regularizer,
+                                           activity_regularizer=_activity_regularizer,
+                                           return_sequences=_return_sequences,
+                                           go_backwards=_go_backwards,
+                                           stateful=_stateful,
+                                           dropout=_dropout,
+                                           recurrent_dropout=_recurent_dropout,
+                                           input_shape=self.input_shape)
+        else:
+            return keras.layers.ConvLSTM2D(_filters,
+                                           (_kernel_size, _kernel_size),
+                                           (_strides, _strides),
+                                           padding=_padding,
+                                           activation=_activation,
+                                           recurrent_activation=_recurrent_activation,
+                                           kernel_initializer=_kernel_initializer,
+                                           recurrent_initializer=_recurrent_initializer,
+                                           bias_initializer=_bias_initializer,
+                                           unit_forget_bias=_unit_forget_bias,
+                                           kernel_regularizer=_kernel_regularizer,
+                                           recurrent_regularizer=_recurrent_regularizer,
+                                           bias_regularizer=_bias_regularizer,
+                                           activity_regularizer=_activity_regularizer,
+                                           return_sequences=_return_sequences,
+                                           go_backwards=_go_backwards,
+                                           stateful=_stateful,
+                                           dropout=_dropout,
+                                           recurrent_dropout=_recurent_dropout
+                                           )
+
+    # Embedding Layer
+    def r_embedding(self):
+        _input_dim = random.randint(1, self.max_input_dim)
+        _output_dim = random.randint(1, self.max_output_dim)
+        _embeddings_initializer = r_initializer()
+        _embeddings_regularizer = r_regularizers()
+        _activity_regularizer = r_regularizers()
+        _mask_zero = random.sample([True, False], 1)[0]
+        _input_length = self.input_shape
+        return keras.layers.Embedding(_input_dim,
+                                      _output_dim,
+                                      embeddings_initializer=_embeddings_initializer,
+                                      embeddings_regularizer=_embeddings_regularizer,
+                                      activity_regularizer=_activity_regularizer,
+                                      mask_zero=_mask_zero,
+                                      input_length=_input_length)
+
+    # LeakyReLU Layer
+    def r_leaky_relu(self):
+        _alpha = random.uniform(0., 1.0)
+        if self.is_first_layer:
+            return keras.layers.LeakyReLU(alpha=_alpha,
+                                          input_shape=self.input_shape)
+        else:
+            return keras.layers.LeakyReLU(alpha=_alpha)
+
+    # PReLU Layer
+    def r_p_relu(self):
+        _alpha_initializer = r_initializer()
+        _alpha_regularizer = r_regularizers()
+        if self.is_first_layer:
+            return keras.layers.PReLU(alpha_initializer=_alpha_initializer,
+                                      alpha_regularizer=_alpha_regularizer,
+                                      input_shape=self.input_shape)
+        else:
+            return keras.layers.PReLU(alpha_initializer=_alpha_initializer,
+                                      alpha_regularizer=_alpha_regularizer)
+
+    # ELU Layer
+    def r_elu(self):
+        _alpha = random.uniform(0., 1.0)
+        if self.is_first_layer:
+            return keras.layers.ELU(alpha=_alpha,
+                                    input_shape=self.input_shape)
+        else:
+            return keras.layers.ELU(alpha=_alpha)
+
+    # ThresholdedReLU Layer
+    def r_thresholded_relu(self):
+        _theta = random.uniform(0., 1.0)
+        if self.is_first_layer:
+            return keras.layers.ThresholdedReLU(theta=_theta,
+                                                input_shape=self.input_shape)
+        else:
+            return keras.layers.ThresholdedReLU(theta=_theta)
+
+    # Softmax Layer
+    def r_softmax(self):
+        if self.is_first_layer:
+            return keras.layers.Softmax(input_shape=self.input_shape)
+        else:
+            return keras.layers.Softmax()
+
+    # ReLU Layer
+    def r_relu(self):
+        if self.is_first_layer:
+            return keras.layers.ReLU(input_shape=self.input_shape)
+        else:
+            return keras.layers.ReLU()
+
+    # GaussianNoise Layer
+    def r_gaussian_noise(self):
+        _stddev = random.uniform(0., 1.)
+        if self.is_first_layer:
+            return keras.layers.GaussianNoise(stddev=_stddev,
+                                              input_shape=self.input_shape)
+        else:
+            return keras.layers.GaussianNoise(stddev=_stddev)
+
+    # GaussianDropout Layer
+    def r_gaussian_dropout(self):
+        _rate = random.uniform(0., self.max_dropout_rate)
+        if self.is_first_layer:
+            return keras.layers.GaussianDropout(rate=_rate,
+                                                input_shape=self.input_shape)
+        else:
+            return keras.layers.GaussianDropout(rate=_rate)
+
+    # AlphaDropout Layer
+    def r_alpha_dropout(self):
+        _rate = random.uniform(0., self.max_dropout_rate)
+        _seed = random.randint(1, 10)
+        if self.is_first_layer:
+            return keras.layers.AlphaDropout(_rate,
+                                             seed=_seed,
+                                             input_shape=self.input_shape)
+        else:
+            return keras.layers.AlphaDropout(_rate,
+                                             seed=_seed)
