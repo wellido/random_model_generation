@@ -10,9 +10,12 @@ def r_activation():
 
 
 def r_initializer():
-    all_initializer = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal',
-                       'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal',
-                       'glorot_uniform', 'he_normal', 'lecun_normal', None]
+    all_initializer = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform',
+                       'TruncatedNormal'
+                       # 'VarianceScaling', 'Orthogonal', 'lecun_uniform', 'glorot_normal',
+                       # 'glorot_uniform', 'he_normal', 'lecun_normal',
+                       # 'Identity'
+                       ]
     initializer_selected = random.sample(all_initializer, 1)[0]
     return initializer_selected
 

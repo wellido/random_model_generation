@@ -15,7 +15,7 @@ class RandomLayers:
         self.units = 0
         self.input_shape = None
         self.is_first_layer = 0
-        self.now_select_layer = None
+        self.now_select_layer = 'all'
 
     def set_first_layer(self, is_first_layer):
         self.is_first_layer = is_first_layer
@@ -23,129 +23,90 @@ class RandomLayers:
     def set_input_shape(self, input_shape):
         self.input_shape = input_shape
 
-    # all_layer_map = {
-    #              'Dense': 1,
-    #              'Activation': 2,
-    #              'Dropout': 3,
-    #              'Flatten': 4,
-    #              'Input': 5,
-    #              'ActivityRegularization': 6,
-    #              'Masking': 7,
-    #              'SpatialDropout1D': 8,
-    #              'SpatialDropout2D': 9,
-    #              'SpatialDropout3D': 10,
-    #              'Conv1D': 11,
-    #              'Conv2D': 12,
-    #              'SeparableConv1D': 13,
-    #              'SeparableConv2D': 14,
-    #              'DepthwiseConv2D': 15,
-    #              'Conv2DTranspose': 16,
-    #              'Conv3D': 17,
-    #              'Conv3DTranspose': 18,
-    #              'Cropping1D': 19,
-    #              'Cropping2D': 20,
-    #              'Cropping3D': 21,
-    #              'UpSampling1D': 22,
-    #              'UpSampling2D': 23,
-    #              'UpSampling3D': 24,
-    #              'ZeroPadding1D': 25,
-    #              'ZeroPadding2D': 26,
-    #              'ZeroPadding3D': 27,
-    #              'MaxPooling1D': 28,
-    #              'MaxPooling2D': 29,
-    #              'MaxPooling3D': 30,
-    #              'AveragePooling1D': 31,
-    #              'AveragePooling2D': 32,
-    #              'AveragePooling3D': 33,
-    #              'GlobalMaxPooling1D': 34,
-    #              'GlobalAveragePooling1D': 35,
-    #              'GlobalMaxPooling2D': 36,
-    #              'GlobalAveragePooling2D': 37,
-    #              'GlobalMaxPooling3D': 38,
-    #              'GlobalAveragePooling3D': 39,
-    #              'LocallyConnected1D': 40,
-    #              'LocallyConnected2D': 41,
-    #              'SimpleRNN': 42,
-    #              'GRU': 43,
-    #              'LSTM': 44,
-    #              'ConvLSTM2D': 45,
-    #              'Embedding': 46,
-    #              'LeakyReLU': 47,
-    #              'PReLU': 48,
-    #              'ELU': 49,
-    #              'ThresholdedReLU': 50,
-    #              'Softmax': 51,
-    #              'ReLU': 52,
-    #              'GaussianNoise': 53,
-    #              'GaussianDropout': 54,
-    #              'AlphaDropout': 55
-    #              }
     general_layer_map = {
-        'Dense': 1,
         'Activation': 2,
         'Dropout': 3,
-        'Flatten': 4,
-        'ActivityRegularization': 6,
-        'Masking': 7,
-        'LeakyReLU': 47,
-        'PReLU': 48,
-        'ELU': 49,
-        'ThresholdedReLU': 50,
-        'Softmax': 51,
-        'ReLU': 52,
-        'GaussianNoise': 53,
-        'GaussianDropout': 54,
-        'AlphaDropout': 55
+        'ActivityRegularization': 5,
+        # 'Masking': 6,
+        'LeakyReLU': 45,
+        'PReLU': 46,
+        'ELU': 47,
+        'ThresholdedReLU': 48,
+        'Softmax': 49,
+        'ReLU': 50,
+        'GaussianNoise': 51,
+        'GaussianDropout': 52,
+        'AlphaDropout': 53,
+        'Dense': 1
+    }
+
+    layer_map_0d = {
+        'Flatten': 4
     }
 
     layer_map_1d = {
-        'SpatialDropout1D': 8,
-        'Conv1D': 11,
-        'SeparableConv1D': 13,
-        'Cropping1D': 19,
-        'UpSampling1D': 22,
-        'ZeroPadding1D': 25,
-        'MaxPooling1D': 28,
-        'AveragePooling1D': 31,
-        'GlobalMaxPooling1D': 34,
-        'GlobalAveragePooling1D': 35,
-        'LocallyConnected1D': 40,
+        'SpatialDropout1D': 7,
+        'Conv1D': 10,
+        # 'SeparableConv1D': 12,
+        'Cropping1D': 18,
+        'UpSampling1D': 21,
+        'ZeroPadding1D': 24,
+        'MaxPooling1D': 27,
+        'AveragePooling1D': 30,
+        'GlobalMaxPooling1D': 33,
+        'GlobalAveragePooling1D': 34
+        # 'LocallyConnected1D': 39,
     }
 
     layer_map_2d = {
-        'SpatialDropout2D': 9,
-        'Conv2D': 12,
-        'SeparableConv2D': 14,
-        'DepthwiseConv2D': 15,
-        'Conv2DTranspose': 16,
-        'Cropping2D': 20,
-        'UpSampling2D': 23,
-        'ZeroPadding2D': 26,
-        'MaxPooling2D': 29,
-        'AveragePooling2D': 32,
-        'GlobalMaxPooling2D': 36,
-        'GlobalAveragePooling2D': 37,
-        'LocallyConnected2D': 41,
-        'ConvLSTM2D': 45,
+        'SpatialDropout2D': 8,
+        'Conv2D': 11,
+        'SeparableConv2D': 13,
+        'DepthwiseConv2D': 14,
+        'Conv2DTranspose': 15,
+        'Cropping2D': 19,
+        'UpSampling2D': 22,
+        'ZeroPadding2D': 25,
+        'MaxPooling2D': 28,
+        'AveragePooling2D': 31,
+        'GlobalMaxPooling2D': 35,
+        'GlobalAveragePooling2D': 36
+        # 'LocallyConnected2D': 40,
     }
 
     layer_map_3d = {
-        'SpatialDropout3D': 10,
-        'Conv3D': 17,
-        'Conv3DTranspose': 18,
-        'Cropping3D': 21,
-        'UpSampling3D': 24,
-        'ZeroPadding3D': 27,
-        'MaxPooling3D': 30,
-        'AveragePooling3D': 33,
-        'GlobalMaxPooling3D': 38,
-        'GlobalAveragePooling3D': 39,
+        # 'ConvLSTM2D': 44,
+        'SpatialDropout3D': 9,
+        'Conv3D': 16,
+        'Conv3DTranspose': 17,
+        'Cropping3D': 20,
+        'UpSampling3D': 23,
+        'ZeroPadding3D': 26,
+        'MaxPooling3D': 29,
+        'AveragePooling3D': 32,
+        'GlobalMaxPooling3D': 37,
+        'GlobalAveragePooling3D': 38,
     }
 
     layer_map_rnn = {
-        'SimpleRNN': 42,
-        'GRU': 43,
-        'LSTM': 44,
+        'SimpleRNN': 41,
+        'GRU': 42,
+        'LSTM': 43,
+    }
+
+    layer_map_pooling = {
+        'MaxPooling1D': 27,
+        'AveragePooling1D': 30,
+        'GlobalMaxPooling1D': 33,
+        'GlobalAveragePooling1D': 34,
+        'MaxPooling2D': 28,
+        'AveragePooling2D': 31,
+        'GlobalMaxPooling2D': 35,
+        'GlobalAveragePooling2D': 36,
+        'MaxPooling3D': 29,
+        'AveragePooling3D': 32,
+        'GlobalMaxPooling3D': 37,
+        'GlobalAveragePooling3D': 38,
     }
 
     # Dense Layer
@@ -266,7 +227,7 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.Conv1D(_filters,
                                        _kernel_size,
-                                       _strides,
+                                       strides=_strides,
                                        padding=_padding,
                                        activation=_activation,
                                        kernel_initializer=_kernel_initializer,
@@ -278,7 +239,7 @@ class RandomLayers:
         else:
             return keras.layers.Conv1D(_filters,
                                        _kernel_size,
-                                       _strides,
+                                       strides=_strides,
                                        padding=_padding,
                                        activation=_activation,
                                        kernel_initializer=_kernel_initializer,
@@ -302,7 +263,7 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.Conv2D(_filters,
                                        (_kernel_size, _kernel_size),
-                                       (_strides, _strides),
+                                       strides=(_strides, _strides),
                                        padding=_padding,
                                        activation=_activation,
                                        kernel_initializer=_kernel_initializer,
@@ -314,7 +275,7 @@ class RandomLayers:
         else:
             return keras.layers.Conv2D(_filters,
                                        (_kernel_size, _kernel_size),
-                                       (_strides, _strides),
+                                       strides=(_strides, _strides),
                                        padding=_padding,
                                        activation=_activation,
                                        kernel_initializer=_kernel_initializer,
@@ -374,7 +335,7 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.SpatialDropout2D(_filters,
                                                  (_kernel_size, _kernel_size),
-                                                 (_strides, _strides),
+                                                 strides=(_strides, _strides),
                                                  padding=_padding,
                                                  activation=_activation,
                                                  kernel_initializer=_kernel_initializer,
@@ -386,7 +347,7 @@ class RandomLayers:
         else:
             return keras.layers.SeparableConv2D(_filters,
                                                 (_kernel_size, _kernel_size),
-                                                (_strides, _strides),
+                                                strides=(_strides, _strides),
                                                 padding=_padding,
                                                 activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
@@ -407,19 +368,19 @@ class RandomLayers:
         _bias_regularizer = r_regularizers()
         _activity_regularizer = r_regularizers()
         if self.is_first_layer:
-            return keras.layers.SpatialDropout2D(_kernel_size,
-                                                 (_strides, _strides),
-                                                 padding=_padding,
-                                                 activation=_activation,
-                                                 kernel_initializer=_kernel_initializer,
-                                                 bias_initializer=_bias_initializer,
-                                                 kernel_regularizer=_kernel_regularizer,
-                                                 bias_regularizer=_bias_regularizer,
-                                                 activity_regularizer=_activity_regularizer,
-                                                 input_shape=self.input_shape)
+            return keras.layers.DepthwiseConv2D(_kernel_size,
+                                                strides=(_strides, _strides),
+                                                padding=_padding,
+                                                activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape)
         else:
-            return keras.layers.SeparableConv2D(_kernel_size,
-                                                (_strides, _strides),
+            return keras.layers.DepthwiseConv2D(_kernel_size,
+                                                strides=(_strides, _strides),
                                                 padding=_padding,
                                                 activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
@@ -443,11 +404,11 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.Conv2DTranspose(_filters,
                                                 (_kernel_size, _kernel_size),
-                                                (_strides, _strides),
+                                                strides=(_strides, _strides),
                                                 padding=_padding,
                                                 activation=_activation,
-                                                kernel_initializer=_kernel_initializer,
-                                                bias_initializer=_bias_initializer,
+                                                kernel_initializer='glorot_uniform',
+                                                bias_initializer='zeros',
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer,
@@ -456,11 +417,11 @@ class RandomLayers:
         else:
             return keras.layers.Conv2DTranspose(_filters,
                                                 (_kernel_size, _kernel_size),
-                                                (_strides, _strides),
+                                                strides=(_strides, _strides),
                                                 padding=_padding,
                                                 activation=_activation,
-                                                kernel_initializer=_kernel_initializer,
-                                                bias_initializer=_bias_initializer,
+                                                kernel_initializer='glorot_uniform',
+                                                bias_initializer='zeros',
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer
@@ -481,7 +442,7 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.Conv3D(_filters,
                                        (_kernel_size, _kernel_size, _kernel_size),
-                                       (_strides, _strides, _strides),
+                                       strides=(_strides, _strides, _strides),
                                        padding=_padding,
                                        activation=_activation,
                                        kernel_initializer=_kernel_initializer,
@@ -493,7 +454,7 @@ class RandomLayers:
         else:
             return keras.layers.Conv3D(_filters,
                                        (_kernel_size, _kernel_size, _kernel_size),
-                                       (_strides, _strides, _strides),
+                                       strides=(_strides, _strides, _strides),
                                        padding=_padding,
                                        activation=_activation,
                                        kernel_initializer=_kernel_initializer,
@@ -517,7 +478,7 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.Conv3DTranspose(_filters,
                                                 (_kernel_size, _kernel_size, _kernel_size),
-                                                (_strides, _strides, _strides),
+                                                strides=(_strides, _strides, _strides),
                                                 padding=_padding, activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
@@ -528,7 +489,7 @@ class RandomLayers:
         else:
             return keras.layers.Conv3DTranspose(_filters,
                                                 (_kernel_size, _kernel_size, _kernel_size),
-                                                (_strides, _strides, _strides),
+                                                strides=(_strides, _strides, _strides),
                                                 padding=_padding, activation=_activation,
                                                 kernel_initializer=_kernel_initializer,
                                                 bias_initializer=_bias_initializer,
@@ -785,7 +746,6 @@ class RandomLayers:
         _filters = random.randint(1, self.max_filter)
         _kernel_size = random.randint(1, _filters)
         _strides = random.randint(1, _filters - _kernel_size + 1)
-        _padding = r_padding2()
         _activation = r_activation()
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
@@ -795,8 +755,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.LocallyConnected2D(_filters,
                                                    (_kernel_size, _kernel_size),
-                                                   (_strides, _strides),
-                                                   padding=_padding,
+                                                   strides=(_strides, _strides),
+                                                   padding='valid',
                                                    activation=_activation,
                                                    kernel_initializer=_kernel_initializer,
                                                    bias_initializer=_bias_initializer,
@@ -807,8 +767,8 @@ class RandomLayers:
         else:
             return keras.layers.LocallyConnected2D(_filters,
                                                    (_kernel_size, _kernel_size),
-                                                   (_strides, _strides),
-                                                   padding=_padding,
+                                                   strides=(_strides, _strides),
+                                                   padding='valid',
                                                    activation=_activation,
                                                    kernel_initializer=_kernel_initializer,
                                                    bias_initializer=_bias_initializer,
@@ -829,16 +789,11 @@ class RandomLayers:
         _activity_regularizer = r_regularizers()
         _dropout = random.uniform(0., self.max_dropout_rate)
         _recurent_dropout = random.uniform(0., self.max_dropout_rate)
-        # _return_sequences = random.sample([True, False], 1)[0]
-        # _return_state = random.sample([True, False], 1)[0]
-        # _go_backwards = random.sample([True, False], 1)[0]
-        # _stateful = random.sample([True, False], 1)[0]
-        # _unroll = random.sample([True, False], 1)[0]
-        _return_sequences = random.choice([True, False])
-        _return_state = random.choice([True, False])
-        _go_backwards = random.choice([True, False])
-        _stateful = random.choice([True, False])
-        _unroll = random.choice([True, False])
+        _return_sequences = False
+        _return_state = False
+        _go_backwards = False
+        _stateful = False
+        _unroll = False
         if self.is_first_layer:
             return keras.layers.SimpleRNN(_units,
                                           activation=_activation,
@@ -890,16 +845,11 @@ class RandomLayers:
         _dropout = random.uniform(0., self.max_dropout_rate)
         _recurent_dropout = random.uniform(0., self.max_dropout_rate)
         _implementation = random.randint(1, 2)
-        # _return_sequences = random.sample([True, False], 1)[0]
-        # _return_state = random.sample([True, False], 1)[0]
-        # _go_backwards = random.sample([True, False], 1)[0]
-        # _stateful = random.sample([True, False], 1)[0]
-        # _unroll = random.sample([True, False], 1)[0]
-        _return_sequences = random.choice([True, False])
-        _return_state = random.choice([True, False])
-        _go_backwards = random.choice([True, False])
-        _stateful = random.choice([True, False])
-        _unroll = random.choice([True, False])
+        _return_sequences = False
+        _return_state = False
+        _go_backwards = False
+        _stateful = False
+        _unroll = False
         if self.is_first_layer:
             return keras.layers.GRU(_units,
                                     activation=_activation,
@@ -958,16 +908,11 @@ class RandomLayers:
         _dropout = random.uniform(0., self.max_dropout_rate)
         _recurent_dropout = random.uniform(0., self.max_dropout_rate)
         _implementation = random.randint(1, 2)
-        # _return_sequences = random.sample([True, False], 1)[0]
-        # _return_state = random.sample([True, False], 1)[0]
-        # _go_backwards = random.sample([True, False], 1)[0]
-        # _stateful = random.sample([True, False], 1)[0]
-        # _unroll = random.sample([True, False], 1)[0]
-        _return_sequences = random.choice([True, False])
-        _return_state = random.choice([True, False])
-        _go_backwards = random.choice([True, False])
-        _stateful = random.choice([True, False])
-        _unroll = random.choice([True, False])
+        _return_sequences = False
+        _return_state = False
+        _go_backwards = False
+        _stateful = False
+        _unroll = False
         if self.is_first_layer:
             return keras.layers.LSTM(_units,
                                      activation=_activation,
@@ -1023,24 +968,20 @@ class RandomLayers:
         _kernel_initializer = r_initializer()
         _recurrent_initializer = r_initializer()
         _bias_initializer = r_initializer()
-        # _unit_forget_bias = random.sample([True, False], 1)[0]
         _unit_forget_bias = random.choice([True, False])
         _kernel_regularizer = r_regularizers()
         _recurrent_regularizer = r_regularizers()
         _bias_regularizer = r_regularizers()
         _activity_regularizer = r_regularizers()
-        # _return_sequences = random.sample([True, False], 1)[0]
-        # _go_backwards = random.sample([True, False], 1)[0]
-        # _stateful = random.sample([True, False], 1)[0]
         _return_sequences = random.choice([True, False])
         _go_backwards = random.choice([True, False])
-        _stateful = random.choice([True, False])
+        _stateful = False
         _dropout = random.uniform(0., self.max_dropout_rate)
         _recurent_dropout = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
             return keras.layers.ConvLSTM2D(_filters,
                                            (_kernel_size, _kernel_size),
-                                           (_strides, _strides),
+                                           strides=(_strides, _strides),
                                            padding=_padding,
                                            activation=_activation,
                                            recurrent_activation=_recurrent_activation,
@@ -1061,7 +1002,7 @@ class RandomLayers:
         else:
             return keras.layers.ConvLSTM2D(_filters,
                                            (_kernel_size, _kernel_size),
-                                           (_strides, _strides),
+                                           strides=(_strides, _strides),
                                            padding=_padding,
                                            activation=_activation,
                                            recurrent_activation=_recurrent_activation,
@@ -1089,7 +1030,7 @@ class RandomLayers:
         _activity_regularizer = r_regularizers()
         # _mask_zero = random.sample([True, False], 1)[0]
         _mask_zero = random.choice([True, False])
-        _input_length = self.input_shape
+        _input_length = self.input_shape[0]
         return keras.layers.Embedding(_input_dim,
                                       _output_dim,
                                       embeddings_initializer=_embeddings_initializer,
@@ -1181,11 +1122,7 @@ class RandomLayers:
             return keras.layers.AlphaDropout(_rate,
                                              seed=_seed)
 
-    def layer_select(self):
-        if self.is_first_layer:
-            select = random.randint(1, 53)
-        else:
-            select = random.randint(1, 51)
+    def layer_select(self, select):
         if select == 1:
             return self.r_dense()
         elif select == 2:
