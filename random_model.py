@@ -98,6 +98,7 @@ class RandomModel:
                       optimizer=_optimizer,
                       metrics=['accuracy'])
         model.summary()
+        return model
 
 
 if __name__ == '__main__':
