@@ -9,7 +9,7 @@ class RandomModel:
         self.max_layer = 20
 
     def generate_model(self, input_shape):
-        layer_num = random.randint(1, self.max_layer)
+        layer_num = random.randint(10, self.max_layer)
         layer_count = 0
         layer_generator = RandomLayers()
         # layer list
@@ -43,53 +43,56 @@ class RandomModel:
         layer_count += 1
         # remain layers
         while layer_count < layer_num:
-            if layer_generator.now_select_layer == '0d':
-                if layer_count == layer_num - 1:
+            try:
+                if layer_generator.now_select_layer == '0d':
+                    if layer_count == layer_num - 1:
+                        selected_layer = random.choice(general_layer_list)
+                    else:
+                        selected_layer = random.choice(general_layer_list + layer_rnn_list)
+                    print(selected_layer)
+                    if selected_layer in layer_rnn_list:
+                        layer_generator.now_select_layer = '-d'
+                        select_num = layer_generator.layer_map_rnn[selected_layer]
+                        layer = layer_generator.layer_select(select_num)
+                        model.add(layer)
+                elif layer_generator.now_select_layer == '1d':
+                    selected_layer = random.choice(layer_0d_list + layer_1d_list + general_layer_list)
+                    print(selected_layer)
+                    if selected_layer in layer_0d_list + layer_pooling_list:
+                        layer_generator.now_select_layer = '-d'
+
+                    if selected_layer in layer_1d_list:
+                        select_num = layer_generator.layer_map_1d[selected_layer]
+                        layer = layer_generator.layer_select(select_num)
+                        model.add(layer)
+                elif layer_generator.now_select_layer == '2d':
+                    selected_layer = random.choice(layer_0d_list + layer_2d_list + general_layer_list)
+                    print(selected_layer)
+                    if selected_layer in layer_0d_list + layer_pooling_list:
+                        layer_generator.now_select_layer = '-d'
+                    if selected_layer in layer_2d_list:
+                        select_num = layer_generator.layer_map_2d[selected_layer]
+                        layer = layer_generator.layer_select(select_num)
+                        model.add(layer)
+                elif layer_generator.now_select_layer == '-d':
                     selected_layer = random.choice(general_layer_list)
+                    print(selected_layer)
+
                 else:
-                    selected_layer = random.choice(general_layer_list + layer_rnn_list)
-                print(selected_layer)
-                if selected_layer in layer_rnn_list:
-                    layer_generator.now_select_layer = '-d'
-                    select_num = layer_generator.layer_map_rnn[selected_layer]
+                    selected_layer = random.choice(layer_0d_list + layer_3d_list + general_layer_list)
+                    print(selected_layer)
+                    if selected_layer in layer_0d_list + layer_pooling_list:
+                        layer_generator.now_select_layer = '-d'
+                    if selected_layer in layer_3d_list:
+                        select_num = layer_generator.layer_map_3d[selected_layer]
+                        layer = layer_generator.layer_select(select_num)
+                        model.add(layer)
+                if selected_layer in general_layer_list:
+                    select_num = layer_generator.general_layer_map[selected_layer]
                     layer = layer_generator.layer_select(select_num)
                     model.add(layer)
-            elif layer_generator.now_select_layer == '1d':
-                selected_layer = random.choice(layer_0d_list + layer_1d_list + general_layer_list)
-                print(selected_layer)
-                if selected_layer in layer_0d_list + layer_pooling_list:
-                    layer_generator.now_select_layer = '-d'
-
-                if selected_layer in layer_1d_list:
-                    select_num = layer_generator.layer_map_1d[selected_layer]
-                    layer = layer_generator.layer_select(select_num)
-                    model.add(layer)
-            elif layer_generator.now_select_layer == '2d':
-                selected_layer = random.choice(layer_0d_list + layer_2d_list + general_layer_list)
-                print(selected_layer)
-                if selected_layer in layer_0d_list + layer_pooling_list:
-                    layer_generator.now_select_layer = '-d'
-                if selected_layer in layer_2d_list:
-                    select_num = layer_generator.layer_map_2d[selected_layer]
-                    layer = layer_generator.layer_select(select_num)
-                    model.add(layer)
-            elif layer_generator.now_select_layer == '-d':
-                selected_layer = random.choice(general_layer_list)
-                print(selected_layer)
-
-            else:
-                selected_layer = random.choice(layer_0d_list + layer_3d_list + general_layer_list)
-                print(selected_layer)
-                if selected_layer in layer_0d_list + layer_pooling_list:
-                    layer_generator.now_select_layer = '-d'
-                if selected_layer in layer_3d_list:
-                    select_num = layer_generator.layer_map_3d[selected_layer]
-                    layer = layer_generator.layer_select(select_num)
-                    model.add(layer)
-            if selected_layer in general_layer_list:
-                select_num = layer_generator.general_layer_map[selected_layer]
-                layer = layer_generator.layer_select(select_num)
-                model.add(layer)
+            except:
+                continue
             layer_count += 1
 
         _loss = r_loss()
@@ -103,4 +106,4 @@ class RandomModel:
 
 if __name__ == '__main__':
     test = RandomModel()
-    test.generate_model((28, 23, 28))
+    test.generate_model((28, 23, 1))
