@@ -75,3 +75,5 @@ if __name__ == '__main__':
 
     print('TF acc: {}'.format(acc_tf))
     # print('CNTK acc: {}'.format(acc_cntk))
+
+    
