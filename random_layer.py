@@ -134,6 +134,31 @@ class RandomLayers:
                                       kernel_regularizer=_kernel_regularizer,
                                       bias_regularizer=_bias_regularizer)
 
+    # Dense Layer Without Activation
+    def r_dense_without_activation(self):
+        _activation = None
+        _kernel_initializer = r_initializer()
+        _bias_initializer = r_initializer()
+        _kernel_regularizer = r_regularizers()
+        _bias_regularizer = r_regularizers()
+        _unit = random.randint(1, self.max_units)
+        self.units = _unit
+        if self.is_first_layer:
+            return keras.layers.Dense(_unit,
+                                      activation=_activation,
+                                      kernel_initializer=_kernel_initializer,
+                                      bias_initializer=_bias_initializer,
+                                      kernel_regularizer=_kernel_regularizer,
+                                      bias_regularizer=_bias_regularizer,
+                                      input_shape=self.input_shape)
+        else:
+            return keras.layers.Dense(_unit,
+                                      activation=_activation,
+                                      kernel_initializer=_kernel_initializer,
+                                      bias_initializer=_bias_initializer,
+                                      kernel_regularizer=_kernel_regularizer,
+                                      bias_regularizer=_bias_regularizer)
+
     # Activation Layer
     def r_activation(self):
         _activation = r_activation()
