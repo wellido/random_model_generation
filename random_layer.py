@@ -135,13 +135,12 @@ class RandomLayers:
                                       bias_regularizer=_bias_regularizer)
 
     # Dense Layer Without Activation
-    def r_dense_without_activation(self):
+    def r_dense_without_activation(self, _unit):
         _activation = None
         _kernel_initializer = r_initializer()
         _bias_initializer = r_initializer()
         _kernel_regularizer = r_regularizers()
         _bias_regularizer = r_regularizers()
-        _unit = random.randint(1, self.max_units)
         self.units = _unit
         if self.is_first_layer:
             return keras.layers.Dense(_unit,
@@ -358,7 +357,7 @@ class RandomLayers:
         _bias_regularizer = r_regularizers()
         _activity_regularizer = r_regularizers()
         if self.is_first_layer:
-            return keras.layers.SpatialDropout2D(_filters,
+            return keras.layers.SeparableConv2D(_filters,
                                                  (_kernel_size, _kernel_size),
                                                  strides=(_strides, _strides),
                                                  padding=_padding,
