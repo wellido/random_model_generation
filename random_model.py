@@ -142,7 +142,10 @@ class RandomModel:
         flatten_layer = layer_generator.r_flatten()
         penultimate_dense_layer = layer_generator.r_dense_without_activation(10)
         final_softmax = layer_generator.r_softmax()
-        model.add(flatten_layer)
+        try:
+            model.add(flatten_layer)
+        except:
+            print("skip one layer.")
         model.add(penultimate_dense_layer)
         model.add(final_softmax)
         _loss = r_loss()
