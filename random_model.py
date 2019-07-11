@@ -9,7 +9,7 @@ class RandomModel:
         self.max_layer = 20
 
     def generate_model(self, input_shape):
-        layer_num = random.randint(10, self.max_layer - 2)
+        layer_num = random.randint(10, self.max_layer - 3)
         layer_count = 0
         layer_generator = RandomLayers()
         # layer list
@@ -139,8 +139,10 @@ class RandomModel:
                 continue
             layer_count += 1
 
+        flatten_layer = layer_generator.r_flatten()
         penultimate_dense_layer = layer_generator.r_dense_without_activation(10)
         final_softmax = layer_generator.r_softmax()
+        model.add(flatten_layer)
         model.add(penultimate_dense_layer)
         model.add(final_softmax)
         _loss = r_loss()
