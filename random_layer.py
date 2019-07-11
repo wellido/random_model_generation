@@ -13,6 +13,7 @@ class RandomLayers:
         self.max_input_dim = 2000
         self.max_output_dim = 100
         self.units = 0
+        self.batch_size = 200
         self.input_shape = None
         self.is_first_layer = 0
         self.now_select_layer = 'all'
@@ -125,7 +126,8 @@ class RandomLayers:
                                       bias_initializer=_bias_initializer,
                                       kernel_regularizer=_kernel_regularizer,
                                       bias_regularizer=_bias_regularizer,
-                                      input_shape=self.input_shape)
+                                      input_shape=self.input_shape,
+                                      batch_size=self.batch_size)
         else:
             return keras.layers.Dense(_unit,
                                       activation=_activation,
@@ -149,7 +151,8 @@ class RandomLayers:
                                       bias_initializer=_bias_initializer,
                                       kernel_regularizer=_kernel_regularizer,
                                       bias_regularizer=_bias_regularizer,
-                                      input_shape=self.input_shape)
+                                      input_shape=self.input_shape,
+                                      batch_size=self.batch_size)
         else:
             return keras.layers.Dense(_unit,
                                       activation=_activation,
@@ -175,7 +178,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.Dropout(dropout_rate,
                                         seed=_seed,
-                                        input_shape=self.input_shape)
+                                        input_shape=self.input_shape,
+                                        batch_size=self.batch_size)
         else:
             return keras.layers.Dropout(dropout_rate,
                                         seed=_seed)
@@ -183,13 +187,15 @@ class RandomLayers:
     # Flatten Layer
     def r_flatten(self):
         if self.is_first_layer:
-            return keras.layers.Flatten(input_shape=self.input_shape)
+            return keras.layers.Flatten(input_shape=self.input_shape,
+                                        batch_size=self.batch_size)
         else:
             return keras.layers.Flatten()
 
     # Input Layer
     def r_input(self):
-        return keras.layers.InputLayer(input_shape=self.input_shape, dtype='float32')
+        return keras.layers.InputLayer(input_shape=self.input_shape,
+                                       dtype='float32')
 
     # ActivityRegularization Layer
     def r_activity_regularization(self):
@@ -198,7 +204,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.ActivityRegularization(l1=l1_factor,
                                                        l2=l2_factor,
-                                                       input_shape=self.input_shape)
+                                                       input_shape=self.input_shape,
+                                                       batch_size=self.batch_size)
         else:
             return keras.layers.ActivityRegularization(l1=l1_factor,
                                                        l2=l2_factor)
@@ -207,23 +214,26 @@ class RandomLayers:
     def r_masking(self):
         _mask_value = random.uniform(0., 1.0)
         return keras.layers.Masking(mask_value=_mask_value,
-                                    input_shape=self.input_shape)
+                                    input_shape=self.input_shape,
+                                    batch_size=self.batch_size)
 
     # SpatialDropout1D Layer
     def r_spatial_dropout1d(self):
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
-            return keras.layers.SpatialDropout1D(dropout_rate)
-        else:
             return keras.layers.SpatialDropout1D(dropout_rate,
-                                                 input_shape=self.input_shape)
+                                                 input_shape=self.input_shape,
+                                                 batch_size=self.batch_size)
+        else:
+            return keras.layers.SpatialDropout1D(dropout_rate)
 
     # SpatialDropout2D Layer
     def r_spatial_dropout2d(self):
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
             return keras.layers.SpatialDropout2D(dropout_rate,
-                                                 input_shape=self.input_shape)
+                                                 input_shape=self.input_shape,
+                                                 batch_size=self.batch_size)
         else:
             return keras.layers.SpatialDropout2D(dropout_rate)
 
@@ -232,7 +242,8 @@ class RandomLayers:
         dropout_rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
             return keras.layers.SpatialDropout3D(dropout_rate,
-                                                 input_shape=self.input_shape)
+                                                 input_shape=self.input_shape,
+                                                 batch_size=self.batch_size)
         else:
             return keras.layers.SpatialDropout3D(dropout_rate)
 
@@ -259,7 +270,8 @@ class RandomLayers:
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
                                        activity_regularizer=_activity_regularizer,
-                                       input_shape=self.input_shape)
+                                       input_shape=self.input_shape,
+                                       batch_size=self.batch_size)
         else:
             return keras.layers.Conv1D(_filters,
                                        _kernel_size,
@@ -295,7 +307,8 @@ class RandomLayers:
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
                                        activity_regularizer=_activity_regularizer,
-                                       input_shape=self.input_shape)
+                                       input_shape=self.input_shape,
+                                       batch_size=self.batch_size)
         else:
             return keras.layers.Conv2D(_filters,
                                        (_kernel_size, _kernel_size),
@@ -331,7 +344,8 @@ class RandomLayers:
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer,
-                                                input_shape=self.input_shape)
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size)
         else:
             return keras.layers.SeparableConv1D(_filters,
                                                 _kernel_size,
@@ -358,16 +372,17 @@ class RandomLayers:
         _activity_regularizer = r_regularizers()
         if self.is_first_layer:
             return keras.layers.SeparableConv2D(_filters,
-                                                 (_kernel_size, _kernel_size),
-                                                 strides=(_strides, _strides),
-                                                 padding=_padding,
-                                                 activation=_activation,
-                                                 kernel_initializer=_kernel_initializer,
-                                                 bias_initializer=_bias_initializer,
-                                                 kernel_regularizer=_kernel_regularizer,
-                                                 bias_regularizer=_bias_regularizer,
-                                                 activity_regularizer=_activity_regularizer,
-                                                 input_shape=self.input_shape)
+                                                (_kernel_size, _kernel_size),
+                                                strides=(_strides, _strides),
+                                                padding=_padding,
+                                                activation=_activation,
+                                                kernel_initializer=_kernel_initializer,
+                                                bias_initializer=_bias_initializer,
+                                                kernel_regularizer=_kernel_regularizer,
+                                                bias_regularizer=_bias_regularizer,
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size)
         else:
             return keras.layers.SeparableConv2D(_filters,
                                                 (_kernel_size, _kernel_size),
@@ -401,7 +416,8 @@ class RandomLayers:
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer,
-                                                input_shape=self.input_shape)
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size)
         else:
             return keras.layers.DepthwiseConv2D(_kernel_size,
                                                 strides=(_strides, _strides),
@@ -436,7 +452,8 @@ class RandomLayers:
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer,
-                                                input_shape=self.input_shape
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size
                                                 )
         else:
             return keras.layers.Conv2DTranspose(_filters,
@@ -474,7 +491,8 @@ class RandomLayers:
                                        kernel_regularizer=_kernel_regularizer,
                                        bias_regularizer=_bias_regularizer,
                                        activity_regularizer=_activity_regularizer,
-                                       input_shape=self.input_shape)
+                                       input_shape=self.input_shape,
+                                       batch_size=self.batch_size)
         else:
             return keras.layers.Conv3D(_filters,
                                        (_kernel_size, _kernel_size, _kernel_size),
@@ -508,7 +526,9 @@ class RandomLayers:
                                                 bias_initializer=_bias_initializer,
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
-                                                activity_regularizer=_activity_regularizer
+                                                activity_regularizer=_activity_regularizer,
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size
                                                 )
         else:
             return keras.layers.Conv3DTranspose(_filters,
@@ -520,7 +540,6 @@ class RandomLayers:
                                                 kernel_regularizer=_kernel_regularizer,
                                                 bias_regularizer=_bias_regularizer,
                                                 activity_regularizer=_activity_regularizer,
-                                                input_shape=self.input_shape
                                                 )
 
     # Cropping1D Layer
@@ -528,7 +547,8 @@ class RandomLayers:
         _cropping = random.randint(0, 2)
         if self.is_first_layer:
             return keras.layers.Cropping1D(cropping=_cropping,
-                                           input_shape=self.input_shape)
+                                           input_shape=self.input_shape,
+                                           batch_size=self.batch_size)
         else:
             return keras.layers.Cropping1D(cropping=_cropping)
 
@@ -537,7 +557,8 @@ class RandomLayers:
         _cropping = random.randint(0, 2)
         if self.is_first_layer:
             return keras.layers.Cropping2D(cropping=_cropping,
-                                           input_shape=self.input_shape)
+                                           input_shape=self.input_shape,
+                                           batch_size=self.batch_size)
         else:
             return keras.layers.Cropping2D(cropping=_cropping)
 
@@ -546,7 +567,8 @@ class RandomLayers:
         _cropping = random.randint(0, 2)
         if self.is_first_layer:
             return keras.layers.Cropping3D(cropping=_cropping,
-                                           input_shape=self.input_shape)
+                                           input_shape=self.input_shape,
+                                           batch_size=self.batch_size)
         else:
             return keras.layers.Cropping3D(cropping=_cropping)
 
@@ -555,7 +577,8 @@ class RandomLayers:
         _size = random.randint(0, 2)
         if self.is_first_layer:
             return keras.layers.UpSampling1D(size=_size,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.UpSampling1D(size=_size)
 
@@ -566,7 +589,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.UpSampling2D(size=_size,
                                              interpolation=_interpolation,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.UpSampling2D(size=_size,
                                              interpolation=_interpolation)
@@ -576,7 +600,8 @@ class RandomLayers:
         _size = random.randint(0, 2)
         if self.is_first_layer:
             return keras.layers.UpSampling3D(size=_size,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.UpSampling3D(size=_size)
 
@@ -587,7 +612,8 @@ class RandomLayers:
         if _choose:
             if self.is_first_layer:
                 return keras.layers.ZeroPadding1D(padding=(_padding, _padding),
-                                                  input_shape=self.input_shape)
+                                                  input_shape=self.input_shape,
+                                                  batch_size=self.batch_size)
             else:
                 return keras.layers.ZeroPadding1D(padding=(_padding, _padding))
         else:
@@ -599,7 +625,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.ZeroPadding2D(padding=_padding,
                                               data_format=None,
-                                              input_shape=self.input_shape)
+                                              input_shape=self.input_shape,
+                                              batch_size=self.batch_size)
         else:
             return keras.layers.ZeroPadding2D(padding=_padding,
                                               data_format=None)
@@ -610,7 +637,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.ZeroPadding3D(padding=_padding,
                                               data_format=None,
-                                              input_shape=self.input_shape)
+                                              input_shape=self.input_shape,
+                                              batch_size=self.batch_size)
         else:
             return keras.layers.ZeroPadding3D(padding=_padding,
                                               data_format=None)
@@ -622,7 +650,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.MaxPooling1D(pool_size=_pool_size,
                                              padding=_padding,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.MaxPooling1D(pool_size=_pool_size,
                                              padding=_padding)
@@ -634,7 +663,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.MaxPooling2D(pool_size=_pool_size,
                                              padding=_padding,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.MaxPooling2D(pool_size=_pool_size,
                                              padding=_padding)
@@ -646,7 +676,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.MaxPooling3D(pool_size=_pool_size,
                                              padding=_padding,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.MaxPooling3D(pool_size=_pool_size,
                                              padding=_padding)
@@ -658,7 +689,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.AveragePooling1D(pool_size=_pool_size,
                                                  padding=_padding,
-                                                 input_shape=self.input_shape)
+                                                 input_shape=self.input_shape,
+                                                 batch_size=self.batch_size)
         else:
             return keras.layers.AveragePooling1D(pool_size=_pool_size,
                                                  padding=_padding)
@@ -670,7 +702,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.AveragePooling2D(pool_size=_pool_size,
                                                  padding=_padding,
-                                                 input_shape=self.input_shape)
+                                                 input_shape=self.input_shape,
+                                                 batch_size=self.batch_size)
         else:
             return keras.layers.AveragePooling2D(pool_size=_pool_size,
                                                  padding=_padding)
@@ -682,7 +715,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.AveragePooling3D(pool_size=_pool_size,
                                                  padding=_padding,
-                                                 input_shape=self.input_shape)
+                                                 input_shape=self.input_shape,
+                                                 batch_size=self.batch_size)
         else:
             return keras.layers.AveragePooling3D(pool_size=_pool_size,
                                                  padding=_padding)
@@ -690,42 +724,48 @@ class RandomLayers:
     # GlobalMaxPooling1D Layer
     def r_global_max_pooling1d(self):
         if self.is_first_layer:
-            return keras.layers.GlobalMaxPooling1D(input_shape=self.input_shape)
+            return keras.layers.GlobalMaxPooling1D(input_shape=self.input_shape,
+                                                   batch_size=self.batch_size)
         else:
             return keras.layers.GlobalAveragePooling1D()
 
     # GlobalAveragePooling1D Layer
     def r_global_average_pooling1d(self):
         if self.is_first_layer:
-            return keras.layers.GlobalAveragePooling1D(input_shape=self.input_shape)
+            return keras.layers.GlobalAveragePooling1D(input_shape=self.input_shape,
+                                                       batch_size=self.batch_size)
         else:
             return keras.layers.GlobalAveragePooling1D()
 
     # GlobalMaxPooling2D Layer
     def r_global_max_pooling2d(self):
         if self.is_first_layer:
-            return keras.layers.GlobalMaxPooling2D(input_shape=self.input_shape)
+            return keras.layers.GlobalMaxPooling2D(input_shape=self.input_shape,
+                                                   batch_size=self.batch_size)
         else:
             return keras.layers.GlobalMaxPooling2D()
 
     # GlobalAveragePooling2D Layer
     def r_global_average_pooling2d(self):
         if self.is_first_layer:
-            return keras.layers.GlobalAveragePooling2D(input_shape=self.input_shape)
+            return keras.layers.GlobalAveragePooling2D(input_shape=self.input_shape,
+                                                       batch_size=self.batch_size)
         else:
             return keras.layers.GlobalAveragePooling2D()
 
     # GlobalMaxPooling3D Layer
     def r_global_max_pooling3d(self):
         if self.is_first_layer:
-            return keras.layers.GlobalMaxPooling3D(input_shape=self.input_shape)
+            return keras.layers.GlobalMaxPooling3D(input_shape=self.input_shape,
+                                                   batch_size=self.batch_size)
         else:
             return keras.layers.GlobalMaxPooling3D()
 
     # GlobalAveragePooling3D Layer
     def r_global_average_pooling3d(self):
         if self.is_first_layer:
-            return keras.layers.GlobalAveragePooling3D(input_shape=self.input_shape)
+            return keras.layers.GlobalAveragePooling3D(input_shape=self.input_shape,
+                                                       batch_size=self.batch_size)
         else:
             return keras.layers.GlobalAveragePooling3D()
 
@@ -752,7 +792,8 @@ class RandomLayers:
                                                    kernel_regularizer=_kernel_regularizer,
                                                    bias_regularizer=_bias_regularizer,
                                                    activity_regularizer=_activity_regularizer,
-                                                   input_shape=self.input_shape)
+                                                   input_shape=self.input_shape,
+                                                   batch_size=self.batch_size)
         else:
             return keras.layers.LocallyConnected1D(_filters,
                                                    _kernel_size,
@@ -787,7 +828,8 @@ class RandomLayers:
                                                    kernel_regularizer=_kernel_regularizer,
                                                    bias_regularizer=_bias_regularizer,
                                                    activity_regularizer=_activity_regularizer,
-                                                   input_shape=self.input_shape)
+                                                   input_shape=self.input_shape,
+                                                   batch_size=self.batch_size)
         else:
             return keras.layers.LocallyConnected2D(_filters,
                                                    (_kernel_size, _kernel_size),
@@ -835,7 +877,8 @@ class RandomLayers:
                                           go_backwards=_go_backwards,
                                           stateful=_stateful,
                                           unroll=_unroll,
-                                          input_shape=self.input_shape)
+                                          input_shape=self.input_shape,
+                                          batch_size=self.batch_size)
         else:
             return keras.layers.SimpleRNN(_units,
                                           activation=_activation,
@@ -893,7 +936,8 @@ class RandomLayers:
                                     go_backwards=_go_backwards,
                                     stateful=_stateful,
                                     unroll=_unroll,
-                                    input_shape=self.input_shape
+                                    input_shape=self.input_shape,
+                                    batch_size=self.batch_size
                                     )
         else:
             return keras.layers.GRU(_units,
@@ -957,7 +1001,8 @@ class RandomLayers:
                                      go_backwards=_go_backwards,
                                      stateful=_stateful,
                                      unroll=_unroll,
-                                     input_shape=self.input_shape
+                                     input_shape=self.input_shape,
+                                     batch_size=self.batch_size
                                      )
         else:
             return keras.layers.LSTM(_units,
@@ -1022,7 +1067,8 @@ class RandomLayers:
                                            stateful=_stateful,
                                            dropout=_dropout,
                                            recurrent_dropout=_recurent_dropout,
-                                           input_shape=self.input_shape)
+                                           input_shape=self.input_shape,
+                                           batch_size=self.batch_size)
         else:
             return keras.layers.ConvLSTM2D(_filters,
                                            (_kernel_size, _kernel_size),
@@ -1068,7 +1114,8 @@ class RandomLayers:
         _alpha = random.uniform(0., 1.0)
         if self.is_first_layer:
             return keras.layers.LeakyReLU(alpha=_alpha,
-                                          input_shape=self.input_shape)
+                                          input_shape=self.input_shape,
+                                          batch_size=self.batch_size)
         else:
             return keras.layers.LeakyReLU(alpha=_alpha)
 
@@ -1079,7 +1126,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.PReLU(alpha_initializer=_alpha_initializer,
                                       alpha_regularizer=_alpha_regularizer,
-                                      input_shape=self.input_shape)
+                                      input_shape=self.input_shape,
+                                      batch_size=self.batch_size)
         else:
             return keras.layers.PReLU(alpha_initializer=_alpha_initializer,
                                       alpha_regularizer=_alpha_regularizer)
@@ -1089,7 +1137,8 @@ class RandomLayers:
         _alpha = random.uniform(0., 1.0)
         if self.is_first_layer:
             return keras.layers.ELU(alpha=_alpha,
-                                    input_shape=self.input_shape)
+                                    input_shape=self.input_shape,
+                                    batch_size=self.batch_size)
         else:
             return keras.layers.ELU(alpha=_alpha)
 
@@ -1098,21 +1147,24 @@ class RandomLayers:
         _theta = random.uniform(0., 1.0)
         if self.is_first_layer:
             return keras.layers.ThresholdedReLU(theta=_theta,
-                                                input_shape=self.input_shape)
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size)
         else:
             return keras.layers.ThresholdedReLU(theta=_theta)
 
     # Softmax Layer
     def r_softmax(self):
         if self.is_first_layer:
-            return keras.layers.Softmax(input_shape=self.input_shape)
+            return keras.layers.Softmax(input_shape=self.input_shape,
+                                        batch_size=self.batch_size)
         else:
             return keras.layers.Softmax()
 
     # ReLU Layer
     def r_relu(self):
         if self.is_first_layer:
-            return keras.layers.ReLU(input_shape=self.input_shape)
+            return keras.layers.ReLU(input_shape=self.input_shape,
+                                     batch_size=self.batch_size)
         else:
             return keras.layers.ReLU()
 
@@ -1121,7 +1173,8 @@ class RandomLayers:
         _stddev = random.uniform(0., 1.)
         if self.is_first_layer:
             return keras.layers.GaussianNoise(stddev=_stddev,
-                                              input_shape=self.input_shape)
+                                              input_shape=self.input_shape,
+                                              batch_size=self.batch_size)
         else:
             return keras.layers.GaussianNoise(stddev=_stddev)
 
@@ -1130,7 +1183,8 @@ class RandomLayers:
         _rate = random.uniform(0., self.max_dropout_rate)
         if self.is_first_layer:
             return keras.layers.GaussianDropout(rate=_rate,
-                                                input_shape=self.input_shape)
+                                                input_shape=self.input_shape,
+                                                batch_size=self.batch_size)
         else:
             return keras.layers.GaussianDropout(rate=_rate)
 
@@ -1141,7 +1195,8 @@ class RandomLayers:
         if self.is_first_layer:
             return keras.layers.AlphaDropout(_rate,
                                              seed=_seed,
-                                             input_shape=self.input_shape)
+                                             input_shape=self.input_shape,
+                                             batch_size=self.batch_size)
         else:
             return keras.layers.AlphaDropout(_rate,
                                              seed=_seed)
