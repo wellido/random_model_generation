@@ -32,9 +32,9 @@ class RandomModel:
         self.layer_generator.set_first_layer(1)
         if len(input_shape) == 1:
             self.layer_generator.now_select_layer = '0d'
-            input_layer = self.layer_generator.r_embedding()
+            # input_layer = self.layer_generator.r_embedding()
             # model.add(input_layer)
-            layer_list.append(input_layer)
+            layer_list.append(54)
             is_embbeding = 1
 
         elif len(input_shape) == 2:
@@ -80,9 +80,9 @@ class RandomModel:
         if selected_layer in general_layer_list:
             select_num = self.layer_generator.general_layer_map[selected_layer]
         if is_embbeding == 0:
-            input_layer = self.layer_generator.layer_select(select_num)
+            # input_layer = self.layer_generator.layer_select(select_num)
             # model.add(input_layer)
-            layer_list.append(input_layer)
+            layer_list.append(select_num)
         self.layer_generator.set_first_layer(0)
         layer_count += 1
         # remain layers
@@ -138,32 +138,54 @@ class RandomModel:
                     select_num = self.layer_generator.layer_map_3d[selected_layer]
             if selected_layer in general_layer_list:
                 select_num = self.layer_generator.general_layer_map[selected_layer]
-            layer = self.layer_generator.layer_select(select_num)
-            layer_list.append(layer)
+            # layer = self.layer_generator.layer_select(select_num)
+            layer_list.append(select_num)
             # model.add(layer)
             layer_count += 1
-        flatten_layer = self.layer_generator.r_flatten()
-        penultimate_dense_layer = self.layer_generator.r_dense_without_activation(10)
-        final_softmax = self.layer_generator.r_softmax()
-        layer_list.append(flatten_layer)
-        layer_list.append(penultimate_dense_layer)
-        layer_list.append(final_softmax)
+        layer_list.append(4)
+        layer_list.append(56)
+        layer_list.append(49)
         return layer_list
 
-    def generate_model(self, layer_list):
+    def generate_model(self, layer_list, _loss, _optimizer, layer_config=False):
+        config_list = []
         model = Sequential()
-        for layer in layer_list:
+        if layer_config:
+            self.layer_generator.layer_config = True
+        for i in range(len(layer_list)):
             try:
-                model.add(layer)
+                if i == 0:
+                    self.layer_generator.set_first_layer(1)
+                    if layer_config:
+                        layer = self.layer_generator.layer_select(layer_list[i], layer_config[i])
+                        model.add(layer)
+                    else:
+                        layer = self.layer_generator.layer_select(layer_list[i])
+                        this_config = layer.get_config()
+                        config_list.append(this_config)
+                        model.add(layer)
+                else:
+                    if layer_config:
+                        layer = self.layer_generator.layer_select(layer_list[i], layer_config[i])
+                        model.add(layer)
+                    else:
+                        layer = self.layer_generator.layer_select(layer_list[i])
+                        this_config = layer.get_config()
+                        config_list.append(this_config)
+                        model.add(layer)
             except:
                 print("skip one layer.")
-        _loss = r_loss()
-        _optimizer = r_optimizer()
+
         model.compile(loss=_loss,
                       optimizer=_optimizer,
                       metrics=['accuracy'])
         model.summary()
-        return model
+        return model, config_list
+
+    def generate_compile(self):
+        _loss = r_loss()
+        _optimizer = r_optimizer()
+        return _loss, _optimizer
 
 
 if __name__ == '__main__':
