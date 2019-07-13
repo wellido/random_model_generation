@@ -154,7 +154,6 @@ class RandomModel:
             print("########################")
             self.layer_generator.layer_config = True
         for i in range(len(layer_list)):
-                print(layer_list[i])
             try:
                 if i == 0:
                     self.layer_generator.set_first_layer(1)
