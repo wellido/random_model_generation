@@ -80,9 +80,14 @@ class RandomModel:
         if is_embbeding == 0:
             # input_layer = self.layer_generator.layer_select(select_num)
             # model.add(input_layer)
-            layer_list.append(select_num)
+            if select_num == 1:
+                layer_list.append(4)
+                layer_list.append(1)
+                layer_count += 2
+            else:
+                layer_list.append(select_num)
+                layer_count += 1
         self.layer_generator.set_first_layer(0)
-        layer_count += 1
         # remain layers
         while layer_count < layer_num:
             if self.layer_generator.now_select_layer == '0d':
