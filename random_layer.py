@@ -6,7 +6,7 @@ import keras
 class RandomLayers:
     def __init__(self):
         self.max_units = 50
-        self.max_filter = 50
+        self.max_filter = 25
         self.max_cell = 50
         self.fix_dense = 10
         self.max_dropout_rate = 1.0
@@ -15,7 +15,7 @@ class RandomLayers:
         self.max_output_dim = 100
         self.layer_config = False
         self.units = 0
-        self.batch_size = 200
+        self.batch_size = None
         self.input_shape = None
         self.is_first_layer = 0
         self.now_select_layer = 'all'

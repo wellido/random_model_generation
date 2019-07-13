@@ -48,9 +48,11 @@ def accuracy(y_pred,y):
 
 if __name__ == '__main__':
     generator = RandomModel()
-    model = generator.generate_model((28, 28, 1))
+    ll = generator.generate_layer((28, 28, 1))
+    _loss, _op = generator.generate_compile()
+    model, config_list = generator.generate_model(ll, _loss, _op)
 
-    model.save('test_model.h5')
+    model.save_weights('test_model.h5')
     print('Model saved!')
 
     (_,_),(x_test, y_test) = mnist.load_data()
@@ -60,20 +62,22 @@ if __name__ == '__main__':
     x = x[:200]
     y = y[:200]
 
-    # set_keras_backend(backend='cntk')
-    # m_cntk = load_model('test_model.h5')
-    # y_cntk = m_cntk.predict(x, batch_size=200)
-    # y_cntk = np.argmax(y_cntk, axis=1)
-    # acc_cntk = accuracy(y_cntk, y)
+    set_keras_backend(backend='theano')
+    m_cntk, config_list = generator.generate_model(ll, _loss, _op, config_list)
+    m_cntk.load_weights('test_model.h5')   
+ #m_cntk = load_model('test_model.h5')
+    y_cntk = m_cntk.predict(x, batch_size=200)
+    y_cntk = np.argmax(y_cntk, axis=1)
+    acc_cntk = accuracy(y_cntk, y)
 
     # set_keras_backend()
     # m_tf = load_model('test_model.h5')
-    y_tf = model.predict(x, batch_size=200)
+    #y_tf = model.predict(x, batch_size=200)
     # y_tf = m_tf.predict(x, batch_size=200)
-    y_tf = np.argmax(y_tf, axis=1)
-    acc_tf = accuracy(y_tf, y)
+    #y_tf = np.argmax(y_tf, axis=1)
+    #acc_tf = accuracy(y_tf, y)
 
-    print('TF acc: {}'.format(acc_tf))
-    # print('CNTK acc: {}'.format(acc_cntk))
+    #print('TF acc: {}'.format(acc_tf))
+    print('CNTK acc: {}'.format(acc_cntk))
 
     
