@@ -472,7 +472,8 @@ class RandomLayers:
                                                 batch_size=_config[10])
         else:
             _kernel_size = random.randint(1, self.max_filter)
-            _strides = random.randint(1, self.max_filter - _kernel_size + 1)
+            # _strides = random.randint(1, self.max_filter - _kernel_size + 1)
+            _strides = 1
             _padding = r_padding2()
             _activation = r_activation()
             _kernel_initializer = r_initializer()
