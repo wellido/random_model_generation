@@ -137,9 +137,14 @@ class RandomModel:
             if selected_layer in general_layer_list:
                 select_num = self.layer_generator.general_layer_map[selected_layer]
             # layer = self.layer_generator.layer_select(select_num)
-            layer_list.append(select_num)
+            if select_num == 1:
+                layer_list.append(4)
+                layer_list.append(1)
+                layer_count += 2
+            else:
+                layer_list.append(select_num)
+                layer_count += 1
             # model.add(layer)
-            layer_count += 1
         layer_list.append(4)
         layer_list.append(56)
         layer_list.append(49)
