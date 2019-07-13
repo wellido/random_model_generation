@@ -153,6 +153,7 @@ class RandomModel:
             print("########################")
             self.layer_generator.layer_config = True
         for i in range(len(layer_list)):
+                print(layer_list[i])
             try:
                 if i == 0:
                     self.layer_generator.set_first_layer(1)
@@ -172,7 +173,7 @@ class RandomModel:
                         config_list.append(this_config)
                         model.add(layer)
             except:
-                print("skip one layer.")
+                print("skip one layer: ", layer_list[i])
 
         model.compile(loss=_loss,
                       optimizer=_optimizer,
