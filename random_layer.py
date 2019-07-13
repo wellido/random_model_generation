@@ -15,7 +15,7 @@ class RandomLayers:
         self.max_output_dim = 100
         self.layer_config = False
         self.units = 0
-        self.batch_size = None
+        self.batch_size = 10
         self.input_shape = None
         self.is_first_layer = 0
         self.now_select_layer = 'all'
@@ -185,8 +185,7 @@ class RandomLayers:
                                       bias_initializer=_config[3],
                                       kernel_regularizer=_config[4],
                                       bias_regularizer=_config[5],
-                                      input_shape=_config[6],
-                                      batch_size=_config[7])
+                                      )
         else:
             _activation = None
             _kernel_initializer = r_initializer()
@@ -194,16 +193,15 @@ class RandomLayers:
             _kernel_regularizer = r_regularizers()
             _bias_regularizer = r_regularizers()
             self.units = _unit
-            return keras.layers.Dense(_unit,
+            return keras.layers.Dense(10,
                                       activation=_activation,
                                       kernel_initializer=_kernel_initializer,
                                       bias_initializer=_bias_initializer,
                                       kernel_regularizer=_kernel_regularizer,
                                       bias_regularizer=_bias_regularizer,
-                                      input_shape=self.input_shape,
-                                      batch_size=self.batch_size), \
+                                      ), \
                    [_unit, _activation, _kernel_initializer, _bias_initializer, _kernel_regularizer,
-                    _bias_regularizer, self.input_shape, self.batch_size]
+                    _bias_regularizer]
         # if self.is_first_layer:
         #     if self.layer_config:
         #         return keras.layers.Dense.from_config(_config)
