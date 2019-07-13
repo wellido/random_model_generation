@@ -32,8 +32,6 @@ class RandomModel:
         self.layer_generator.set_first_layer(1)
         if len(input_shape) == 1:
             self.layer_generator.now_select_layer = '0d'
-            # input_layer = self.layer_generator.r_embedding()
-            # model.add(input_layer)
             layer_list.append(54)
             is_embbeding = 1
 
@@ -151,6 +149,8 @@ class RandomModel:
         config_list = []
         model = Sequential()
         if layer_config:
+            print("########################")
+            print("########################")
             self.layer_generator.layer_config = True
         for i in range(len(layer_list)):
             try:
@@ -160,8 +160,7 @@ class RandomModel:
                         layer = self.layer_generator.layer_select(layer_list[i], layer_config[i])
                         model.add(layer)
                     else:
-                        layer = self.layer_generator.layer_select(layer_list[i])
-                        this_config = layer.get_config()
+                        layer, this_config = self.layer_generator.layer_select(layer_list[i])
                         config_list.append(this_config)
                         model.add(layer)
                 else:
@@ -169,8 +168,7 @@ class RandomModel:
                         layer = self.layer_generator.layer_select(layer_list[i], layer_config[i])
                         model.add(layer)
                     else:
-                        layer = self.layer_generator.layer_select(layer_list[i])
-                        this_config = layer.get_config()
+                        layer, this_config = self.layer_generator.layer_select(layer_list[i])
                         config_list.append(this_config)
                         model.add(layer)
             except:
