@@ -146,6 +146,7 @@ class RandomModel:
         return layer_list
 
     def generate_model(self, layer_list, _loss, _optimizer, layer_config=False):
+        new_layer_list = []
         config_list = []
         model = Sequential()
         if layer_config:
@@ -161,24 +162,25 @@ class RandomModel:
                         model.add(layer)
                     else:
                         layer, this_config = self.layer_generator.layer_select(layer_list[i])
-                        config_list.append(this_config)
                         model.add(layer)
+                        config_list.append(this_config)
                 else:
                     if layer_config:
                         layer = self.layer_generator.layer_select(layer_list[i], layer_config[i])
                         model.add(layer)
                     else:
                         layer, this_config = self.layer_generator.layer_select(layer_list[i])
-                        config_list.append(this_config)
                         model.add(layer)
+                        config_list.append(this_config)
+                new_layer_list.append(layer_list[i])
             except:
-                print("skip one layer.")
+                print("skip one layer: ", layer_list[i])
 
         model.compile(loss=_loss,
                       optimizer=_optimizer,
                       metrics=['accuracy'])
         model.summary()
-        return model, config_list
+        return model, config_list, new_layer_list
 
     def generate_compile(self):
         _loss = r_loss()
