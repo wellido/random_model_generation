@@ -5,14 +5,17 @@ import importlib
 from keras import backend as K
 from keras.models import load_model
 from keras.datasets import mnist, cifar10
+from model_generation_new import RandomWeakModel
 
 from random_model import *
+
 
 def set_keras_backend(backend='tensorflow'):
     if K.backend() != backend:
         os.environ['KERAS_BACKEND'] = backend
         importlib.reload(K)
         assert K.backend() == backend
+
 
 def mnist_preprocess(x, backend='tensorflow'):
     x_test = np.copy(x)
@@ -23,6 +26,7 @@ def mnist_preprocess(x, backend='tensorflow'):
     x_test = x_test.astype('float32')
     x_test /= 255
     return x_test
+
 
 def cifar10_preprocess(x, backend='tensorflow'):
     x_test = x.copy()
@@ -42,16 +46,22 @@ def cifar10_preprocess(x, backend='tensorflow'):
             x_test[:, i, :, :] = (x_test[:, i, :, :] - mean[i]) / std[i]
     return  x_test
 
-def accuracy(y_pred,y):
-    return np.sum(y_pred==y)/y.shape[0]
+
+def accuracy(y_pred, y):
+    return np.sum(y_pred == y) / y.shape[0]
 
 
 if __name__ == '__main__':
-    generator = RandomModel()
-    model = generator.generate_model((28, 28, 1))
+    generator = RandomWeakModel()
+    ll = generator.generate_layer((28, 28, 1))
+    _loss, _op = generator.generate_compile()
+    model, config_list, new_ll = generator.generate_model(ll, _loss, _op)
 
-    model.save('test_model.h5')
+    model.save_weights('test_model.h5')
     print('Model saved!')
+    print(config_list)
+    new_model, config_list, new_ll = generator.generate_model(new_ll, _loss, _op, config_list)
+    new_model.load_weights('test_model.h5')
 
     (_,_),(x_test, y_test) = mnist.load_data()
     x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
@@ -68,7 +78,7 @@ if __name__ == '__main__':
 
     # set_keras_backend()
     # m_tf = load_model('test_model.h5')
-    y_tf = model.predict(x, batch_size=200)
+    y_tf = new_model.predict(x, batch_size=200)
     # y_tf = m_tf.predict(x, batch_size=200)
     y_tf = np.argmax(y_tf, axis=1)
     acc_tf = accuracy(y_tf, y)
@@ -76,4 +86,3 @@ if __name__ == '__main__':
     print('TF acc: {}'.format(acc_tf))
     # print('CNTK acc: {}'.format(acc_cntk))
 
-    
