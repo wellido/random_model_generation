@@ -47,10 +47,11 @@ def accuracy(y_pred,y):
 
 
 if __name__ == '__main__':
+    set_keras_backend(backend='cntk')
     generator = RandomModel()
     ll = generator.generate_layer((28, 28, 1))
     _loss, _op = generator.generate_compile()
-    model, config_list = generator.generate_model(ll, _loss, _op)
+    model, config_list, new_ll = generator.generate_model(ll, _loss, _op)
 
     model.save_weights('test_model.h5')
     print('Model saved!')
@@ -62,8 +63,8 @@ if __name__ == '__main__':
     x = x[:200]
     y = y[:200]
 
-    set_keras_backend(backend='theano')
-    m_cntk, config_list = generator.generate_model(ll, _loss, _op, config_list)
+    set_keras_backend()
+    m_cntk, config_list, new_ll = generator.generate_model(new_ll, _loss, _op, config_list)
     m_cntk.load_weights('test_model.h5')   
  #m_cntk = load_model('test_model.h5')
     y_cntk = m_cntk.predict(x, batch_size=200)
