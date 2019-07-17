@@ -35,8 +35,8 @@ def r_padding():
 
 
 def r_padding2():
-    # all_padding = ['valid', 'same']
-    all_padding = ['valid']
+    all_padding = ['valid', 'same']
+    # all_padding = ['valid']
 
     padding_selected = random.sample(all_padding, 1)[0]
     return padding_selected
