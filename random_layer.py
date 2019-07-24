@@ -15,7 +15,7 @@ class RandomLayers:
         self.max_output_dim = 100
         self.layer_config = False
         self.units = 0
-        self.batch_size = 10
+        self.batch_size = None
         self.input_shape = None
         self.is_first_layer = 0
         self.now_select_layer = 'all'
