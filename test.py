@@ -60,10 +60,10 @@ if __name__ == '__main__':
     model, config_list, new_ll = generator.generate_model(ll, _loss, _op)
 
     model.save_weights('test_model.h5')
-    print('Model saved!')
-    print(config_list)
-    new_model, config_list, new_ll = generator.generate_model(new_ll, _loss, _op, config_list)
-    new_model.load_weights('test_model.h5')
+ #   print('Model saved!')
+  #  print(config_list)
+   # new_model, config_list, new_ll = generator.generate_model(new_ll, _loss, _op, config_list)
+   # new_model.load_weights('test_model.h5')
 
     (_,_),(x_test, y_test) = mnist.load_data()
     x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     # set_keras_backend()
     # m_tf = load_model('test_model.h5')
     #y_tf = model.predict(x, batch_size=200)
-    y_tf = new_model.predict(x, batch_size=200)
+   # y_tf = new_model.predict(x, batch_size=200)
     # y_tf = m_tf.predict(x, batch_size=200)
     #y_tf = np.argmax(y_tf, axis=1)
     #acc_tf = accuracy(y_tf, y)
