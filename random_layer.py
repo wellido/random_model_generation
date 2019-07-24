@@ -6,7 +6,7 @@ import keras
 class RandomLayers:
     def __init__(self):
         self.max_units = 50
-        self.max_filter = 50
+        self.max_filter = 3
         self.max_cell = 50
         self.fix_dense = 10
         self.max_dropout_rate = 1.0
@@ -15,7 +15,7 @@ class RandomLayers:
         self.max_output_dim = 100
         self.layer_config = False
         self.units = 0
-        self.batch_size = 10
+        self.batch_size = None
         self.input_shape = None
         self.is_first_layer = 0
         self.now_select_layer = 'all'
@@ -1411,40 +1411,48 @@ class RandomLayers:
                    [_rate, _seed, self.input_shape, self.batch_size]
 
     # BatchNormalization
+    # def r_batch_normalization(self, _config=None):
+    #     if self.layer_config:
+    #         return keras.layers.BatchNormalization(momentum=_config[0],
+    #                                                epsilon=_config[1],
+    #                                                beta_initializer=_config[2],
+    #                                                gamma_initializer=_config[3],
+    #                                                moving_mean_initializer=_config[4],
+    #                                                moving_variance_initializer=_config[5],
+    #                                                beta_regularizer=_config[6],
+    #                                                gamma_regularizer=_config[7],
+    #                                                input_shape=_config[8],
+    #                                                batch_size=_config[9])
+    #     else:
+    #         _momentum = random.uniform(0., 1.)
+    #         _epsilon = random.uniform(0., 0.01)
+    #         _beta_initializer = r_initializer()
+    #         _gamma_initializer = r_initializer()
+    #         _moving_mean_initializer = r_initializer()
+    #         _moving_variance_initializer = r_initializer()
+    #         _beta_regularizer = r_regularizers()
+    #         _gamma_regularizer = r_regularizers()
+    #         return keras.layers.BatchNormalization(momentum=_momentum,
+    #                                                epsilon=_epsilon,
+    #                                                beta_initializer=_beta_initializer,
+    #                                                gamma_initializer=_gamma_initializer,
+    #                                                moving_mean_initializer=_moving_mean_initializer,
+    #                                                moving_variance_initializer=_moving_variance_initializer,
+    #                                                beta_regularizer=_beta_regularizer,
+    #                                                gamma_regularizer=_gamma_regularizer,
+    #                                                input_shape=self.input_shape,
+    #                                                batch_size=self.batch_size), \
+    #                [_momentum, _epsilon, _beta_initializer, _gamma_initializer, _moving_mean_initializer,
+    #                 _moving_variance_initializer, _beta_regularizer, _gamma_regularizer, self.input_shape,
+    #                 self.batch_size]
+
     def r_batch_normalization(self, _config=None):
         if self.layer_config:
-            return keras.layers.BatchNormalization(momentum=_config[0],
-                                                   epsilon=_config[1],
-                                                   beta_initializer=_config[2],
-                                                   gamma_initializer=_config[3],
-                                                   moving_mean_initializer=_config[4],
-                                                   moving_variance_initializer=_config[5],
-                                                   beta_regularizer=_config[6],
-                                                   gamma_regularizer=_config[7],
-                                                   input_shape=_config[8],
-                                                   batch_size=_config[9])
+            return keras.layers.BatchNormalization()
         else:
-            _momentum = random.uniform(0., 1.)
-            _epsilon = random.uniform(0., 0.01)
-            _beta_initializer = r_initializer()
-            _gamma_initializer = r_initializer()
-            _moving_mean_initializer = r_initializer()
-            _moving_variance_initializer = r_initializer()
-            _beta_regularizer = r_regularizers()
-            _gamma_regularizer = r_regularizers()
-            return keras.layers.BatchNormalization(momentum=_momentum,
-                                                   epsilon=_epsilon,
-                                                   beta_initializer=_beta_initializer,
-                                                   gamma_initializer=_gamma_initializer,
-                                                   moving_mean_initializer=_moving_mean_initializer,
-                                                   moving_variance_initializer=_moving_variance_initializer,
-                                                   beta_regularizer=_beta_regularizer,
-                                                   gamma_regularizer=_gamma_regularizer,
-                                                   input_shape=self.input_shape,
-                                                   batch_size=self.batch_size), \
-                   [_momentum, _epsilon, _beta_initializer, _gamma_initializer, _moving_mean_initializer,
-                    _moving_variance_initializer, _beta_regularizer, _gamma_regularizer, self.input_shape,
-                    self.batch_size]
+            return keras.layers.BatchNormalization(), \
+                   [
+                   ]
 
     def layer_select(self, select, _config=None):
         if select == 1:
