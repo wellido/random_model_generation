@@ -62,31 +62,26 @@ if __name__ == '__main__':
     generator = RandomRNNModel()
     ll = generator.generate_layer((28, 28))
     _loss, _op = generator.generate_compile()
-    model, config_list, new_ll = generator.generate_model(ll, _loss, _op)
+    m_cntk, config_list, new_ll = generator.generate_model(ll, _loss, _op)
 
-    model.save_weights('test_model.h5')
+    m_cntk.save_weights('test_model.h5')
     print('Model saved!')
     print(config_list)
-
-    new_model, config_list, new_ll = generator.generate_model(new_ll, _loss, _op, config_list)
-    new_model.load_weights('test_model.h5')
-
-    # m_cntk = load_model('test_model.h5')
-    m_cntk = new_model
+    # cntk
     y_cntk = m_cntk.predict(x, batch_size=200)
     y_cntk = np.argmax(y_cntk, axis=1)
     acc_cntk = accuracy(y_cntk, y)
 
-    m_cntk.save('tmp.h5')
-
     set_keras_backend()
-    m_tf = load_model('tmp.h5')
+    m_tf, config_list, tf_ll = generator.generate_model(new_ll, _loss, _op, config_list)
+    m_tf.load_weights('test_model.h5')
     y_tf = m_tf.predict(x, batch_size=200)
     y_tf = np.argmax(y_tf, axis=1)
     acc_tf = accuracy(y_tf, y)
 
     set_keras_backend(backend='theano')
-    m_the = load_model('tmp.h5')
+    m_the, config_list, tf_ll = generator.generate_model(new_ll, _loss, _op, config_list)
+    m_the.load_weights('test_model.h5')
     y_the = m_the.predict(x, batch_size=200)
     y_the = np.argmax(y_the, axis=1)
     acc_the = accuracy(y_the, y)
