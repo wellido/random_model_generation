@@ -52,6 +52,12 @@ def accuracy(y_pred, y):
 
 
 if __name__ == '__main__':
+    (_,_),(x_test, y_test) = mnist.load_data()
+    x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
+    y = y_test.reshape(y_test.shape[0])
+    x = mnist_preprocess(x_test, backend='keras')
+
+    set_keras_backend(backend='cntk')
     generator = RandomWeakModel()
     ll = generator.generate_layer((28, 28, 1))
     _loss, _op = generator.generate_compile()
@@ -60,29 +66,30 @@ if __name__ == '__main__':
     model.save_weights('test_model.h5')
     print('Model saved!')
     print(config_list)
+
     new_model, config_list, new_ll = generator.generate_model(new_ll, _loss, _op, config_list)
     new_model.load_weights('test_model.h5')
 
-    (_,_),(x_test, y_test) = mnist.load_data()
-    x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
-    y = y_test.reshape(y_test.shape[0])
-    x = mnist_preprocess(x_test, backend='keras')
-    x = x[:200]
-    y = y[:200]
-
-    # set_keras_backend(backend='cntk')
     # m_cntk = load_model('test_model.h5')
-    # y_cntk = m_cntk.predict(x, batch_size=200)
-    # y_cntk = np.argmax(y_cntk, axis=1)
-    # acc_cntk = accuracy(y_cntk, y)
+    m_cntk = new_model
+    y_cntk = m_cntk.predict(x, batch_size=200)
+    y_cntk = np.argmax(y_cntk, axis=1)
+    acc_cntk = accuracy(y_cntk, y)
 
-    # set_keras_backend()
-    # m_tf = load_model('test_model.h5')
-    y_tf = new_model.predict(x, batch_size=200)
-    # y_tf = m_tf.predict(x, batch_size=200)
+    m_cntk.save('tmp.h5')
+
+    set_keras_backend()
+    m_tf = load_model('tmp.h5')
+    y_tf = m_tf.predict(x, batch_size=200)
     y_tf = np.argmax(y_tf, axis=1)
     acc_tf = accuracy(y_tf, y)
 
-    print('TF acc: {}'.format(acc_tf))
-    # print('CNTK acc: {}'.format(acc_cntk))
+    set_keras_backend(backend='theano')
+    m_the = load_model('tmp.h5')
+    y_the = m_the.predict(x, batch_size=200)
+    y_the = np.argmax(y_the, axis=1)
+    acc_the = accuracy(y_the, y)
 
+    print('TF acc: {}'.format(acc_tf))
+    print('CNTK acc: {}'.format(acc_cntk))
+    print('Theano acc: {}'.format(acc_the))
