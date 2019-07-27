@@ -53,7 +53,7 @@ def accuracy(y_pred, y):
 
 
 if __name__ == '__main__':
-    (_,_),(x_test, y_test) = mnist.load_data()
+    (_, _), (x_test, y_test) = mnist.load_data()
     x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
     y = y_test.reshape(y_test.shape[0])
     x = mnist_preprocess(x_test, backend='keras')
@@ -62,6 +62,18 @@ if __name__ == '__main__':
     generator = RandomConv2dModel()
     # specify the config
     c_f = [0, 0, 0]
+
+    # c_f[0] -> kernel_size
+    #       0: odd
+    #       1: even
+    # c_f[1] -> strides
+    #       0: 1
+    #       1: odd
+    #       2: even
+    # c_f[2] -> padding
+    #       0: same
+    #       1: padding
+
     ll = generator.generate_layer((28, 28, 1), c_f)
     _loss, _op = generator.generate_compile()
     m_cntk, config_list, new_ll = generator.generate_model(ll, _loss, _op)
