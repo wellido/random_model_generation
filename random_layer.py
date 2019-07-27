@@ -6,8 +6,7 @@ import keras
 class RandomLayers:
     def __init__(self):
         self.max_units = 50
-        self.max_filter = 25
-        self.max_filter = 3
+        self.max_filter = 10
         self.max_cell = 50
         self.fix_dense = 10
         self.max_dropout_rate = 1.0
@@ -15,6 +14,7 @@ class RandomLayers:
         self.max_input_dim = 2000
         self.max_output_dim = 100
         self.layer_config = False
+        self.conv2d_config = [0, 0, 0]
         self.units = 0
         self.batch_size = None
         self.input_shape = None
@@ -78,7 +78,8 @@ class RandomLayers:
         'MaxPooling2D': 28,
         'AveragePooling2D': 31,
         'GlobalMaxPooling2D': 35,
-        'GlobalAveragePooling2D': 36
+        'GlobalAveragePooling2D': 36,
+        'Conv2DControl': 58
         # 'LocallyConnected2D': 40,
     }
 
@@ -155,7 +156,7 @@ class RandomLayers:
                                       bias_initializer=_config[3],
                                       kernel_regularizer=_config[4],
                                       bias_regularizer=_config[5],
-                                      )
+                                      batch_size=_config[6])
         else:
             _activation = None
             _kernel_initializer = r_initializer()
@@ -163,15 +164,15 @@ class RandomLayers:
             _kernel_regularizer = r_regularizers()
             _bias_regularizer = r_regularizers()
             self.units = _unit
-            return keras.layers.Dense(10,
+            return keras.layers.Dense(_unit,
                                       activation=_activation,
                                       kernel_initializer=_kernel_initializer,
                                       bias_initializer=_bias_initializer,
                                       kernel_regularizer=_kernel_regularizer,
                                       bias_regularizer=_bias_regularizer,
-                                      ), \
-                   [10, _activation, _kernel_initializer, _bias_initializer, _kernel_regularizer,
-                    _bias_regularizer]
+                                      batch_size=self.batch_size), \
+                   [_unit, _activation, _kernel_initializer, _bias_initializer, _kernel_regularizer,
+                    _bias_regularizer, self.batch_size]
 
     # Activation Layer
     def r_activation(self, _config=None):
@@ -1411,6 +1412,85 @@ class RandomLayers:
                                              batch_size=self.batch_size), \
                    [_rate, _seed, self.input_shape, self.batch_size]
 
+    # Conv2d control
+    def r_conv2d_control(self, _config=None):
+        if self.layer_config:
+            return keras.layers.Conv2D(_config[0],
+                                       _config[1],
+                                       strides=_config[2],
+                                       padding=_config[3],
+                                       activation=_config[4],
+                                       kernel_initializer=_config[5],
+                                       bias_initializer=_config[6],
+                                       kernel_regularizer=_config[7],
+                                       bias_regularizer=_config[8],
+                                       activity_regularizer=_config[9],
+                                       input_shape=_config[10],
+                                       batch_size=_config[11])
+        else:
+            c_f = self.conv2d_config
+            _filters = random.randint(1, self.max_filter)
+            _kernel_size = random.randint(1, _filters)
+            # kernel size odd
+            if c_f[0] == 0:
+                if _kernel_size % 2 == 0:
+                    if _kernel_size != self.max_filter:
+                        _kernel_size += 1
+                    else:
+                        _kernel_size -= 1
+            # kernel size even
+            else:
+                if _kernel_size % 2 != 0:
+                    if _kernel_size != self.max_filter:
+                        _kernel_size += 1
+                    else:
+                        _kernel_size -= 1
+            _strides = random.randint(1, _filters - _kernel_size + 1)
+            # stride 1
+            if c_f[1] == 0:
+                _strides = 1
+            # stride odd
+            elif c_f[1] == 1:
+                if _strides % 2 == 0:
+                    if _strides != _filters - _kernel_size + 1:
+                        _strides += 1
+                    elif (_filters - _kernel_size + 1) != 1:
+                        _strides -= 1
+            # stride even
+            else:
+                if _strides % 2 != 0:
+                    if _strides != _filters - _kernel_size + 1:
+                        _strides += 1
+                    elif (_filters - _kernel_size + 1) != 1:
+                        _strides -= 1
+            # padding same
+            if c_f[2] == 0:
+                _padding = 'same'
+            # padding valid
+            else:
+                _padding = 'valid'
+            _activation = r_activation()
+            _kernel_initializer = r_initializer()
+            _bias_initializer = r_initializer()
+            _kernel_regularizer = r_regularizers()
+            _bias_regularizer = r_regularizers()
+            _activity_regularizer = r_regularizers()
+            return keras.layers.Conv2D(_filters,
+                                       (_kernel_size, _kernel_size),
+                                       strides=(_strides, _strides),
+                                       padding=_padding,
+                                       activation=_activation,
+                                       kernel_initializer=_kernel_initializer,
+                                       bias_initializer=_bias_initializer,
+                                       kernel_regularizer=_kernel_regularizer,
+                                       bias_regularizer=_bias_regularizer,
+                                       activity_regularizer=_activity_regularizer,
+                                       input_shape=self.input_shape,
+                                       batch_size=self.batch_size), \
+                   [_filters, (_kernel_size, _kernel_size), (_strides, _strides), _padding, _activation,
+                    _kernel_initializer, _bias_initializer, _kernel_regularizer, _bias_regularizer, _activity_regularizer,
+                    self.input_shape, self.batch_size]
+
     # BatchNormalization
     # def r_batch_normalization(self, _config=None):
     #     if self.layer_config:
@@ -1570,3 +1650,6 @@ class RandomLayers:
             return self.r_dense_without_activation(10, _config=_config)
         elif select == 57:
             return self.r_batch_normalization()
+        elif select == 58:
+            return self.r_conv2d_control(_config=_config)
+
