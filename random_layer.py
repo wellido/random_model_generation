@@ -1010,10 +1010,10 @@ class RandomLayers:
                                           return_sequences=_config[11],
                                           return_state=_config[12],
                                           go_backwards=_config[13],
-                                          stateful=_config[13],
-                                          unroll=_config[14],
-                                          input_shape=_config[15],
-                                          batch_size=_config[16])
+                                          stateful=_config[14],
+                                          unroll=_config[15],
+                                          input_shape=_config[16],
+                                          batch_size=_config[17])
         else:
             _units = random.randint(1, self.max_units)
             _activation = r_activation()
