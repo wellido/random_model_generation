@@ -29,7 +29,7 @@ class Random1layerModel:
 
         if len(input_shape) == 2:
             self.layer_generator.now_select_layer = '1d'
-            selected_layer = random.choice(list(set(layer_0d_list + layer_1d_list + general_layer_list) -
+            selected_layer = random.choice(list(set(layer_0d_list + layer_1d_list + general_layer_list + layer_rnn_list) -
                                                 set(list_upsample_1d)))
             print(selected_layer)
             if selected_layer in layer_0d_list:
