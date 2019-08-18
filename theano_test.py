@@ -20,46 +20,6 @@ def set_keras_backend(backend='tensorflow'):
         assert K.backend() == backend
 
 
-class logistic_regression(object):
-    def __init__(self, input, n_in, n_out):
-        self.W = theano.shared(
-            value=np.zeros(
-                (n_in, n_out),
-                dtype=theano.config.floatX
-                ),
-            name='W',
-            borrow=True
-        )
-        self.b = theano.shared(
-            value=np.zeros(
-                (n_out,),
-                dtype=theano.config.floatX
-                ),
-            name='b',
-            borrow=True
-        )
-        self.p_y_given_x = T.nnet.softmax(T.dot(input, self.W) + self.b)
-        self.y_pred = T.argmax(self.p_y_given_x, axis=1)
-
-        self.params = [self.W, self.b]
-
-        self.input = input
-
-    def negative_log_likelihood(self, y):
-        return -T.mean(T.log(self.p_y_given_x)[T.arange(y.shape[0]), y])
-
-    def errors(self, y):
-        if y.ndim != self.y_pred.ndim:
-            raise TypeError(
-                'y should have the same shape as self.y_pred',
-                ('y', y.type, 'y_pred', self.y_pred.type)
-            )
-        if y.dtype.startswith('int'):
-            return T.mean(T.neq(self.y_pred, y))
-        else:
-            raise NotImplementedError()
-
-
 def _postprocess_conv2d_output(conv_out, x,
                                padding, kernel_shape,
                                strides, data_format):
@@ -73,19 +33,6 @@ def _postprocess_conv2d_output(conv_out, x,
     if data_format == 'channels_last':
         conv_out = conv_out.dimshuffle((0, 2, 3, 1))
     return conv_out
-
-
-def loss(p_y_given_x, y_pred, y_label):
-    # negative log likelihood
-    nll = -T.mean(T.log(p_y_given_x)[T.arange(y_label.shape[0]), y_label])
-
-    if y_label.dtype.startswith('int'):
-        error_rate = T.mean(T.neq(y_pred, y_label))
-    else:
-        raise NotImplementedError()
-
-    return nll, error_rate
-
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 # # In[ ]:
